@@ -4,6 +4,7 @@ Reads CSV files from 3 project directories:
 - probability: stock_prob_engine/output
 - chartking: output
 - real: output
+  ***깃허브 올리기 ->>  python main.py --push
 
 Finds files starting with 'top30', gets latest file per day for 10 days,
 and runs ensemble scoring.

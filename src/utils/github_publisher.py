@@ -27,7 +27,7 @@ class GitHubPublisher:
         repo_dir: Path | str | None = None,
         pages_dir: Path | str | None = None,
         remote: str = "origin",
-        branch: str = "main",
+        branch: str = "master",
         token_env: str = "VBT_TOKEN",
     ):
         """Initialize publisher.
