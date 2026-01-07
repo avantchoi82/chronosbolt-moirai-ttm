@@ -230,6 +230,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             </div>
         </div>
 
+        <div class="section">
+            <h2 class="section-title">Download Data</h2>
+            <div class="history-link" style="text-align: left; padding: 15px;">
+                <p style="margin-bottom: 10px; color: #888;">Ensemble Result:</p>
+                <a href="{result_csv}" download>📊 Ensemble Result CSV</a>
+                <p style="margin: 15px 0 10px; color: #888;">Source Data (Input):</p>
+                <a href="sources/" target="_blank">📁 Source CSVs (probability, chartking, real)</a>
+            </div>
+        </div>
+
         <footer>
             <p>Powered by Deep-Ensemble Stock Scanner</p>
             <p>Models: Chronos-Bolt, TTM, Moirai (Zero-shot Foundation Models)</p>
@@ -473,6 +483,7 @@ class HTMLGenerator:
         df: pd.DataFrame,
         as_of_date: date | None = None,
         top_n: int = 30,
+        result_csv: str | None = None,
     ) -> dict[str, Path]:
         """Generate HTML pages.
 
@@ -480,6 +491,7 @@ class HTMLGenerator:
             df: Results DataFrame (from top30.csv)
             as_of_date: Date of results
             top_n: Number of top stocks
+            result_csv: Filename of result CSV for download link
 
         Returns:
             Dictionary of generated file paths
@@ -492,6 +504,10 @@ class HTMLGenerator:
         date_str = as_of_date.strftime("%Y-%m-%d")
         generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+        # Default result CSV filename
+        if result_csv is None:
+            result_csv = f"top30_{as_of_date.strftime('%Y_%m_%d')}.csv"
+
         # Generate table HTML
         top_n_table = _df_to_html_table(df.head(top_n))
 
@@ -502,6 +518,7 @@ class HTMLGenerator:
             top_n=top_n,
             top_n_table=top_n_table,
             github_repo=self.github_repo,
+            result_csv=result_csv,
         )
 
         # Save index.html
@@ -557,6 +574,7 @@ def generate_html_pages(
     top_n: int = 30,
     pages_dir: Path | str | None = None,
     github_repo: str = "avantchoi82/chronosbolt-moirai-ttm",
+    result_csv: str | None = None,
 ) -> dict[str, Path]:
     """Generate HTML pages (convenience function).
 
@@ -565,10 +583,11 @@ def generate_html_pages(
         as_of_date: Date of results
         top_n: Number of top stocks
         pages_dir: Output directory
+        result_csv: Filename of result CSV for download link
         github_repo: GitHub repository name
 
     Returns:
         Dictionary of generated file paths
     """
     generator = HTMLGenerator(pages_dir, github_repo)
-    return generator.generate(df, as_of_date, top_n)
+    return generator.generate(df, as_of_date, top_n, result_csv)

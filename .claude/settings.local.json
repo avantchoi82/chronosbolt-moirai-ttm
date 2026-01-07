@@ -18,7 +18,10 @@
       "Bash(git add:*)",
       "Bash(git remote add:*)",
       "Bash(git commit:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git push:*)",
+      "Bash(ls:*)"
     ]
   }
 }

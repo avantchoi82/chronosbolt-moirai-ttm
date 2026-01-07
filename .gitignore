@@ -45,6 +45,8 @@ cache/
 # Data files
 *.csv
 !config/*.csv
+!docs/*.csv
+!docs/sources/*.csv
 
 # Jupyter
 .ipynb_checkpoints/

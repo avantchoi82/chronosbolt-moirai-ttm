@@ -28,6 +28,7 @@ from src.core.filters import assign_tag
 from src.utils.reporter import Reporter
 from src.utils.html_generator import generate_html_pages
 from src.utils.github_publisher import publish_to_github_pages
+import shutil
 
 logging.basicConfig(
     level=logging.INFO,
@@ -348,6 +349,61 @@ def apply_delta_scoring(
     logger.info(f"Applied delta scoring (vs KOSPI) to {len(scores)} stocks")
 
 
+def get_latest_source_csvs() -> dict[str, Path | None]:
+    """Get the latest CSV file from each source directory.
+
+    Returns:
+        Dictionary of {source_name: latest_file_path}
+    """
+    latest_files = {}
+
+    for source, directory in SOURCE_DIRS.items():
+        if not directory.exists():
+            logger.warning(f"Source directory not found: {directory}")
+            latest_files[source] = None
+            continue
+
+        # Find all top30 CSV files and get the most recent
+        files = list(directory.glob("top30*.csv"))
+        if files:
+            # Sort by modification time (most recent first)
+            files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+            latest_files[source] = files[0]
+            logger.info(f"  {source}: {files[0].name}")
+        else:
+            latest_files[source] = None
+            logger.warning(f"  {source}: No CSV files found")
+
+    return latest_files
+
+
+def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
+    """Copy latest source CSVs to docs/sources/ directory.
+
+    Args:
+        docs_dir: Documentation directory (docs/)
+
+    Returns:
+        List of copied file paths
+    """
+    sources_dir = docs_dir / "sources"
+    sources_dir.mkdir(parents=True, exist_ok=True)
+
+    latest_files = get_latest_source_csvs()
+    copied = []
+
+    for source, filepath in latest_files.items():
+        if filepath and filepath.exists():
+            # Copy with source prefix for clarity
+            dest_name = f"{source}_{filepath.name}"
+            dest_path = sources_dir / dest_name
+            shutil.copy2(filepath, dest_path)
+            copied.append(dest_path)
+            logger.info(f"  Copied: {dest_name}")
+
+    return copied
+
+
 def aggregate_candidates(days: int = 10) -> tuple[list[str], dict[str, str], dict[str, int]]:
     """Aggregate stock candidates from all sources.
 
@@ -514,8 +570,19 @@ def run_ensemble_scanner(
                 top_n=top_n,
                 pages_dir=pages_dir,
                 github_repo=github_repo,
+                result_csv=csv_path.name,
             )
             logger.info(f"HTML generated: {list(html_outputs.keys())}")
+
+            # Copy source CSVs to docs/sources/
+            logger.info("Copying source CSVs...")
+            copied_csvs = copy_source_csvs_to_docs(pages_dir)
+            logger.info(f"Copied {len(copied_csvs)} source CSVs")
+
+            # Copy ensemble result CSV to docs/
+            ensemble_dest = pages_dir / csv_path.name
+            shutil.copy2(csv_path, ensemble_dest)
+            logger.info(f"Copied ensemble result: {csv_path.name}")
 
             # Publish to GitHub Pages
             if push:
@@ -559,11 +626,12 @@ def main():
     )
     parser.add_argument(
         "--github-repo",
-        help="GitHub repository URL for Pages deployment (e.g., github.com/user/repo)"
+        default="github.com/avantchoi82/chronosbolt-moirai-ttm",
+        help="GitHub repository URL for Pages deployment (default: github.com/avantchoi82/chronosbolt-moirai-ttm)"
     )
     parser.add_argument(
-        "--no-push", action="store_true",
-        help="Generate HTML but don't push to GitHub"
+        "--push", action="store_true",
+        help="Push to GitHub after generating HTML (default: no push)"
     )
 
     args = parser.parse_args()
@@ -573,7 +641,7 @@ def main():
         days=args.days,
         dry_run=args.dry_run,
         github_repo=args.github_repo,
-        push=not args.no_push,
+        push=args.push,
     )
 
 
