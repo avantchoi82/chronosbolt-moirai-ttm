@@ -1,0 +1,27 @@
+# Deep-Ensemble Stock Scanner v3.0
+# Based on CONSTITUTION.md 제28조
+
+# Core
+torch>=2.0.0
+numpy>=1.24.0
+pandas>=2.0.0
+pyyaml>=6.0
+
+# Data Collection
+pykrx>=1.0.45
+finance-datareader>=0.9.50
+yfinance>=0.2.0
+
+# Models
+chronos-forecasting @ git+https://github.com/amazon-science/chronos-forecasting.git
+tsfm_public @ git+https://github.com/ibm-granite/granite-tsfm.git
+uni2ts @ git+https://github.com/SalesforceAIResearch/uni2ts.git
+gluonts>=0.14.0
+transformers>=4.35.0
+huggingface_hub>=0.19.0
+
+# Utilities
+tqdm>=4.65.0
+rich>=13.0.0
+scikit-learn>=1.3.0
+psutil>=5.9.0

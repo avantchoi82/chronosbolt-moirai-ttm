@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /b \"C:\\\\Users\\\\user\\\\PycharmProjects\\\\enssanble\")",
+      "Bash(python -m py_compile:*)",
+      "Bash(dir /s /b *.py)",
+      "Bash(findstr:*)",
+      "Bash(python scripts/run_scanner.py:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(dir /b \"C:\\\\Users\\\\user\\\\PycharmProjects\\\\probability\\\\stock_prob_engine\\\\output\\\\top30*\")",
+      "Bash(dir /b \"C:\\\\Users\\\\user\\\\PycharmProjects\\\\chartking\\\\output\\\\top30*\")",
+      "Bash(dir /b \"C:\\\\Users\\\\user\\\\PycharmProjects\\\\real\\\\output\\\\top30*\")",
+      "Bash(pip show:*)",
+      "Bash(dir:*)",
+      "Bash(echo:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git remote add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)"
+    ]
+  }
+}

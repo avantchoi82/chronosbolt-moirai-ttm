@@ -1,0 +1,83 @@
+# Deep-Ensemble Stock Scanner v3.0 Configuration
+# Based on CONSTITUTION.md
+
+# 제4조~제6조: 모델 설정
+models:
+  chronos:
+    name: "amazon/chronos-bolt-small"
+    weight: 0.40
+    dtype: "bfloat16"
+    enabled: true
+
+  ttm:
+    name: "ibm-granite/granite-timeseries-ttm-r2"
+    weight: 0.35
+    enabled: true
+
+  moirai:
+    name: "Salesforce/moirai-1.0-R-small"
+    weight: 0.25
+    num_samples: 100
+    patch_size: "auto"
+    enabled: true
+
+# 제11조: 타임프레임 설정
+horizons:
+  short:
+    context_length: 20
+    prediction_length: 5
+    weight: 0.50
+    return_cap: 0.30  # 제16조: ±30%
+
+  mid:
+    context_length: 60
+    prediction_length: 20
+    weight: 0.30
+    return_cap: 0.50  # 제16조: ±50%
+
+  long:
+    context_length: 120
+    prediction_length: 60
+    weight: 0.20
+    return_cap: 1.00  # 제16조: ±100%
+
+# 제7조~제10조: 데이터 수집 설정
+data:
+  collection_days: 600  # TTM requires 512 context length
+  min_trading_days: 120
+  recent_trading_days: 5
+  max_workers: 8
+  retry_count: 3
+  cache_expiry_hours: 24
+  anomaly_threshold: 0.30  # ±30% 변동
+
+# 제22조: 필터 설정
+filters:
+  min_volume: 50000           # 최소 평균 거래량: 5만주
+  min_value: 500000000        # 최소 평균 거래대금: 5억원
+  max_sector_count: 3         # 동일 섹터 최대 3종목
+  top_n: 30                   # 최종 TOP 30 선정
+  exclude_etf: true
+  exclude_etn: true
+  exclude_spac: true
+  exclude_reits: true
+
+# 제18조~제19조: 스코어링 설정
+scoring:
+  direction_weight: 0.60      # 방향 일치도 가중치
+  magnitude_weight: 0.40      # 크기 일치도 가중치
+  return_weight: 0.70         # 수익률 가중치
+  agreement_weight: 0.30      # 일치도 가중치
+  freq_bonus_factor: 0.02     # 빈도 보너스 계수
+
+# 경로 설정
+paths:
+  output_dir: "outputs"
+  log_dir: "logs"
+  cache_dir: "cache"
+
+# 로깅 설정
+logging:
+  level: "INFO"
+  console_format: "rich"
+  file_format: "detailed"
