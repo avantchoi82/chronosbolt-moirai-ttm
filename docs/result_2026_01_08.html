@@ -15,12 +15,73 @@
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
             color: #e4e4e4;
             min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 80px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            z-index: 1000;
+        }
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            color: #888;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+        .nav-btn.active {
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            color: #1a1a2e;
+        }
+        .nav-btn .icon {
+            font-size: 1.5rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 80px;
+            flex: 1;
             padding: 20px;
+            width: calc(100% - 80px);
         }
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
         header {
             text-align: center;
             margin-bottom: 30px;
@@ -138,6 +199,15 @@
             background: #555;
             color: #ccc;
         }
+        .change-up {
+            color: #00ff88;
+        }
+        .change-down {
+            color: #ff4757;
+        }
+        .change-same {
+            color: #888;
+        }
         footer {
             text-align: center;
             margin-top: 40px;
@@ -183,31 +253,68 @@
             gap: 5px;
             font-size: 0.8rem;
         }
+
+        /* Macro tab specific styles */
+        .macro-header {
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .macro-section .section-title {
+            color: #ffd93d;
+            border-left-color: #ffd93d;
+        }
+        .macro-section th {
+            background: rgba(255, 217, 61, 0.15);
+            color: #ffd93d;
+        }
+        .category {
+            font-weight: 600;
+            color: #ffd93d;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Deep-Ensemble Stock Scanner v3.0</h1>
-            <div class="subtitle">Chronos-Bolt + TTM + Moirai | Delta vs KOSPI</div>
-            <div class="meta">
-                <span>Date: <strong>2026-01-08</strong></span>
-                <span>|</span>
-                <span>Generated: <strong>2026-01-08 12:00:39</strong></span>
-            </div>
-            <div class="legend">
-                <div class="legend-item"><span class="tag tag-short-term-surge">Short-term Surge</span> Short &gt; 5%</div>
-                <div class="legend-item"><span class="tag tag-long-term-growth">Long-term Growth</span> Long &gt; 15%</div>
-                <div class="legend-item"><span class="tag tag-high-confidence">High Confidence</span> Agreement &gt; 85%</div>
-                <div class="legend-item"><span class="tag tag-balanced">Balanced</span> Both positive</div>
-                <div class="legend-item"><span class="tag tag-mixed">Mixed</span> Other</div>
-            </div>
-        </header>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <button class="nav-btn active" onclick="showTab('stocks')" id="btn-stocks">
+            <span class="icon">&#128200;</span>
+            <span>&#51333;&#47785;</span>
+        </button>
+        <button class="nav-btn" onclick="showTab('macro')" id="btn-macro">
+            <span class="icon">&#127760;</span>
+            <span>&#47588;&#53356;&#47196;</span>
+        </button>
+    </nav>
 
-        <div class="section">
-            <h2 class="section-title">Top 30 Momentum Picks (Risk-Adjusted)</h2>
-            <div class="table-wrapper">
-                <table>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+
+            <!-- STOCKS TAB -->
+            <div class="tab-content active" id="tab-stocks">
+                <header>
+                    <h1>Deep-Ensemble Stock Scanner v3.0</h1>
+                    <div class="subtitle">Chronos-Bolt + TTM + Moirai | Delta vs KOSPI</div>
+                    <div class="meta">
+                        <span>Date: <strong>2026-01-08</strong></span>
+                        <span>|</span>
+                        <span>Generated: <strong>2026-01-08 15:45:43</strong></span>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item"><span class="tag tag-short-term-surge">Short-term Surge</span> Short &gt; 5%</div>
+                        <div class="legend-item"><span class="tag tag-long-term-growth">Long-term Growth</span> Long &gt; 15%</div>
+                        <div class="legend-item"><span class="tag tag-high-confidence">High Confidence</span> Agreement &gt; 85%</div>
+                        <div class="legend-item"><span class="tag tag-balanced">Balanced</span> Both positive</div>
+                        <div class="legend-item"><span class="tag tag-mixed">Mixed</span> Other</div>
+                    </div>
+                </header>
+
+                <div class="section">
+                    <h2 class="section-title">Top 30 Momentum Picks (Risk-Adjusted)</h2>
+                    <div class="table-wrapper">
+                        <table>
 <thead><tr>
 <th>순위</th>
 <th>코드</th>
@@ -226,12 +333,12 @@
 <td><span class="rank rank-1">1</span></td>
 <td><span class="code">1430</span></td>
 <td><span class="name">세아베스틸지주</span></td>
-<td><span class="number">60,100</span></td>
-<td><span class="number negative">-4.6%</span></td>
-<td><span class="number positive">+1.6%</span></td>
-<td><span class="number negative">-5.6%</span></td>
-<td><span class="number">0.67</span></td>
-<td><span class="number">0.0370</span></td>
+<td><span class="number">58,000</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0461</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">9</span></td>
 </tr>
@@ -239,387 +346,387 @@
 <td><span class="rank rank-2">2</span></td>
 <td><span class="code">16610</span></td>
 <td><span class="name">DB증권</span></td>
-<td><span class="number">12,340</span></td>
-<td><span class="number negative">-3.8%</span></td>
-<td><span class="number negative">-0.2%</span></td>
-<td><span class="number negative">-5.2%</span></td>
-<td><span class="number">0.71</span></td>
-<td><span class="number">0.0328</span></td>
+<td><span class="number">12,000</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0416</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">7</span></td>
 </tr>
 <tr>
 <td><span class="rank rank-3">3</span></td>
-<td><span class="code">660</span></td>
-<td><span class="name">SK하이닉스</span></td>
-<td><span class="number">737,000</span></td>
-<td><span class="number negative">-1.9%</span></td>
-<td><span class="number positive">+0.2%</span></td>
-<td><span class="number positive">+3.5%</span></td>
-<td><span class="number">0.69</span></td>
-<td><span class="number">0.0323</span></td>
+<td><span class="code">42700</span></td>
+<td><span class="name">한미반도체</span></td>
+<td><span class="number">185,700</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0389</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">6</span></td>
 </tr>
 <tr>
 <td><span class="rank ">4</span></td>
-<td><span class="code">195870</span></td>
-<td><span class="name">해성디에스</span></td>
-<td><span class="number">50,800</span></td>
-<td><span class="number positive">+9.6%</span></td>
-<td><span class="number negative">-6.1%</span></td>
-<td><span class="number negative">-5.9%</span></td>
-<td><span class="number">0.69</span></td>
-<td><span class="number">0.0304</span></td>
-<td><span class="tag tag-short-term-surge">Short-term Surge</span></td>
-<td><span class="number">3</span></td>
+<td><span class="code">660</span></td>
+<td><span class="name">SK하이닉스</span></td>
+<td><span class="number">756,000</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0389</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">6</span></td>
 </tr>
 <tr>
 <td><span class="rank ">5</span></td>
-<td><span class="code">475830</span></td>
-<td><span class="name">오름테라퓨틱</span></td>
-<td><span class="number">134,500</span></td>
-<td><span class="number negative">-0.6%</span></td>
-<td><span class="number positive">+16.5%</span></td>
-<td><span class="number positive">+33.6%</span></td>
-<td><span class="number">0.80</span></td>
-<td><span class="number">0.0298</span></td>
-<td><span class="tag tag-long-term-growth">Long-term Growth</span></td>
-<td><span class="number">4</span></td>
+<td><span class="code">332570</span></td>
+<td><span class="name">PS일렉트로닉스</span></td>
+<td><span class="number">7,890</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0389</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">6</span></td>
 </tr>
 <tr>
 <td><span class="rank ">6</span></td>
-<td><span class="code">28260</span></td>
-<td><span class="name">삼성물산</span></td>
-<td><span class="number">262,500</span></td>
-<td><span class="number positive">+2.2%</span></td>
-<td><span class="number positive">+0.1%</span></td>
-<td><span class="number negative">-2.5%</span></td>
-<td><span class="number">0.70</span></td>
-<td><span class="number">0.0291</span></td>
+<td><span class="code">47810</span></td>
+<td><span class="name">한국항공우주</span></td>
+<td><span class="number">142,800</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0389</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">4</span></td>
+<td><span class="number">6</span></td>
 </tr>
 <tr>
 <td><span class="rank ">7</span></td>
-<td><span class="code">64260</span></td>
-<td><span class="name">다날</span></td>
-<td><span class="number">7,040</span></td>
-<td><span class="number positive">+5.3%</span></td>
-<td><span class="number positive">+7.5%</span></td>
-<td><span class="number negative">-0.2%</span></td>
-<td><span class="number">0.72</span></td>
-<td><span class="number">0.0285</span></td>
-<td><span class="tag tag-short-term-surge">Short-term Surge</span></td>
-<td><span class="number">3</span></td>
+<td><span class="code">402340</span></td>
+<td><span class="name">SK스퀘어</span></td>
+<td><span class="number">430,500</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0389</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">6</span></td>
 </tr>
 <tr>
 <td><span class="rank ">8</span></td>
-<td><span class="code">267260</span></td>
-<td><span class="name">HD현대일렉트릭</span></td>
-<td><span class="number">819,000</span></td>
-<td><span class="number positive">+6.5%</span></td>
-<td><span class="number negative">-6.3%</span></td>
-<td><span class="number negative">-3.3%</span></td>
-<td><span class="number">0.76</span></td>
-<td><span class="number">0.0277</span></td>
-<td><span class="tag tag-short-term-surge">Short-term Surge</span></td>
-<td><span class="number">3</span></td>
-</tr>
-<tr>
-<td><span class="rank ">9</span></td>
-<td><span class="code">47810</span></td>
-<td><span class="name">한국항공우주</span></td>
-<td><span class="number">135,500</span></td>
-<td><span class="number negative">-5.9%</span></td>
-<td><span class="number negative">-5.0%</span></td>
-<td><span class="number negative">-5.5%</span></td>
-<td><span class="number">0.73</span></td>
-<td><span class="number">0.0275</span></td>
-<td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">6</span></td>
-</tr>
-<tr>
-<td><span class="rank ">10</span></td>
-<td><span class="code">54540</span></td>
-<td><span class="name">삼영엠텍</span></td>
-<td><span class="number">14,690</span></td>
-<td><span class="number positive">+5.2%</span></td>
-<td><span class="number positive">+0.1%</span></td>
-<td><span class="number negative">-14.2%</span></td>
-<td><span class="number">0.59</span></td>
-<td><span class="number">0.0270</span></td>
-<td><span class="tag tag-short-term-surge">Short-term Surge</span></td>
-<td><span class="number">3</span></td>
-</tr>
-<tr>
-<td><span class="rank ">11</span></td>
-<td><span class="code">402340</span></td>
-<td><span class="name">SK스퀘어</span></td>
-<td><span class="number">425,500</span></td>
-<td><span class="number negative">-7.1%</span></td>
-<td><span class="number negative">-3.6%</span></td>
-<td><span class="number negative">-6.2%</span></td>
-<td><span class="number">0.71</span></td>
-<td><span class="number">0.0267</span></td>
-<td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">6</span></td>
-</tr>
-<tr>
-<td><span class="rank ">12</span></td>
-<td><span class="code">71055</span></td>
-<td><span class="name">한국금융지주우</span></td>
-<td><span class="number">131,600</span></td>
-<td><span class="number positive">+3.7%</span></td>
-<td><span class="number negative">-1.5%</span></td>
-<td><span class="number negative">-7.9%</span></td>
-<td><span class="number">0.72</span></td>
-<td><span class="number">0.0256</span></td>
-<td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">3</span></td>
-</tr>
-<tr>
-<td><span class="rank ">13</span></td>
-<td><span class="code">32830</span></td>
-<td><span class="name">삼성생명</span></td>
-<td><span class="number">162,000</span></td>
-<td><span class="number positive">+3.4%</span></td>
-<td><span class="number negative">-0.8%</span></td>
-<td><span class="number negative">-4.8%</span></td>
-<td><span class="number">0.74</span></td>
-<td><span class="number">0.0254</span></td>
-<td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">3</span></td>
-</tr>
-<tr>
-<td><span class="rank ">14</span></td>
 <td><span class="code">5930</span></td>
 <td><span class="name">삼성전자</span></td>
-<td><span class="number">139,800</span></td>
-<td><span class="number negative">-5.8%</span></td>
-<td><span class="number negative">-1.1%</span></td>
-<td><span class="number positive">+3.7%</span></td>
-<td><span class="number">0.71</span></td>
-<td><span class="number">0.0254</span></td>
+<td><span class="number">138,800</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0358</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">5</span></td>
 </tr>
 <tr>
-<td><span class="rank ">15</span></td>
+<td><span class="rank ">9</span></td>
 <td><span class="code">29460</span></td>
 <td><span class="name">케이씨</span></td>
-<td><span class="number">28,800</span></td>
-<td><span class="number negative">-1.9%</span></td>
-<td><span class="number negative">-1.3%</span></td>
-<td><span class="number negative">-13.2%</span></td>
-<td><span class="number">0.79</span></td>
-<td><span class="number">0.0247</span></td>
+<td><span class="number">28,300</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">10</span></td>
+<td><span class="code">28260</span></td>
+<td><span class="name">삼성물산</span></td>
+<td><span class="number">270,500</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">11</span></td>
+<td><span class="code">211270</span></td>
+<td><span class="name">AP위성</span></td>
+<td><span class="number">15,430</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">12</span></td>
+<td><span class="code">36540</span></td>
+<td><span class="name">SFA반도체</span></td>
+<td><span class="number">5,730</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">13</span></td>
+<td><span class="code">131970</span></td>
+<td><span class="name">두산테스나</span></td>
+<td><span class="number">52,100</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">14</span></td>
+<td><span class="code">170920</span></td>
+<td><span class="name">엘티씨</span></td>
+<td><span class="number">21,750</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">15</span></td>
+<td><span class="code">295310</span></td>
+<td><span class="name">에이치브이엠</span></td>
+<td><span class="number">69,300</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">4</span></td>
 </tr>
 <tr>
 <td><span class="rank ">16</span></td>
-<td><span class="code">71050</span></td>
-<td><span class="name">한국금융지주</span></td>
-<td><span class="number">169,600</span></td>
-<td><span class="number positive">+2.9%</span></td>
-<td><span class="number negative">-2.6%</span></td>
-<td><span class="number negative">-7.1%</span></td>
-<td><span class="number">0.80</span></td>
-<td><span class="number">0.0246</span></td>
-<td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">3</span></td>
-</tr>
-<tr>
-<td><span class="rank ">17</span></td>
-<td><span class="code">71970</span></td>
-<td><span class="name">HD현대마린엔진</span></td>
-<td><span class="number">90,700</span></td>
-<td><span class="number positive">+2.3%</span></td>
-<td><span class="number negative">-2.0%</span></td>
-<td><span class="number negative">-4.2%</span></td>
-<td><span class="number">0.72</span></td>
-<td><span class="number">0.0243</span></td>
-<td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">3</span></td>
-</tr>
-<tr>
-<td><span class="rank ">18</span></td>
-<td><span class="code">39490</span></td>
-<td><span class="name">키움증권</span></td>
-<td><span class="number">309,000</span></td>
-<td><span class="number positive">+1.2%</span></td>
-<td><span class="number negative">-1.7%</span></td>
-<td><span class="number negative">-4.6%</span></td>
-<td><span class="number">0.73</span></td>
-<td><span class="number">0.0233</span></td>
-<td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">3</span></td>
-</tr>
-<tr>
-<td><span class="rank ">19</span></td>
-<td><span class="code">34730</span></td>
-<td><span class="name">SK</span></td>
-<td><span class="number">282,000</span></td>
-<td><span class="number positive">+1.6%</span></td>
-<td><span class="number negative">-4.8%</span></td>
-<td><span class="number negative">-5.2%</span></td>
-<td><span class="number">0.70</span></td>
-<td><span class="number">0.0233</span></td>
-<td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">3</span></td>
-</tr>
-<tr>
-<td><span class="rank ">20</span></td>
-<td><span class="code">103140</span></td>
-<td><span class="name">풍산</span></td>
-<td><span class="number">113,100</span></td>
-<td><span class="number positive">+0.5%</span></td>
-<td><span class="number positive">+2.9%</span></td>
-<td><span class="number negative">-2.8%</span></td>
-<td><span class="number">0.82</span></td>
-<td><span class="number">0.0232</span></td>
-<td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">3</span></td>
-</tr>
-<tr>
-<td><span class="rank ">21</span></td>
-<td><span class="code">295310</span></td>
-<td><span class="name">에이치브이엠</span></td>
-<td><span class="number">67,300</span></td>
-<td><span class="number negative">-7.2%</span></td>
-<td><span class="number positive">+16.5%</span></td>
-<td><span class="number positive">+3.7%</span></td>
-<td><span class="number">0.68</span></td>
-<td><span class="number">0.0230</span></td>
+<td><span class="code">347700</span></td>
+<td><span class="name">스피어</span></td>
+<td><span class="number">18,000</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">4</span></td>
 </tr>
 <tr>
-<td><span class="rank ">22</span></td>
-<td><span class="code">332570</span></td>
-<td><span class="name">PS일렉트로닉스</span></td>
-<td><span class="number">8,220</span></td>
-<td><span class="number negative">-10.2%</span></td>
-<td><span class="number negative">-11.3%</span></td>
-<td><span class="number negative">-10.9%</span></td>
-<td><span class="number">0.70</span></td>
-<td><span class="number">0.0227</span></td>
+<td><span class="rank ">17</span></td>
+<td><span class="code">451760</span></td>
+<td><span class="name">컨텍</span></td>
+<td><span class="number">14,490</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">6</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">18</span></td>
+<td><span class="code">475830</span></td>
+<td><span class="name">오름테라퓨틱</span></td>
+<td><span class="number">142,100</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">19</span></td>
+<td><span class="code">80220</span></td>
+<td><span class="name">제주반도체</span></td>
+<td><span class="number">33,000</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">20</span></td>
+<td><span class="code">32940</span></td>
+<td><span class="name">원익</span></td>
+<td><span class="number">12,350</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0322</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">4</span></td>
+</tr>
+<tr>
+<td><span class="rank ">21</span></td>
+<td><span class="code">12200</span></td>
+<td><span class="name">계양전기</span></td>
+<td><span class="number">10,980</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">3</span></td>
+</tr>
+<tr>
+<td><span class="rank ">22</span></td>
+<td><span class="code">79550</span></td>
+<td><span class="name">LIG넥스원</span></td>
+<td><span class="number">527,000</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
+<td><span class="tag tag-mixed">Mixed</span></td>
+<td><span class="number">3</span></td>
 </tr>
 <tr>
 <td><span class="rank ">23</span></td>
-<td><span class="code">14680</span></td>
-<td><span class="name">한솔케미칼</span></td>
-<td><span class="number">252,000</span></td>
-<td><span class="number positive">+0.7%</span></td>
-<td><span class="number negative">-5.3%</span></td>
-<td><span class="number negative">-7.4%</span></td>
-<td><span class="number">0.71</span></td>
-<td><span class="number">0.0224</span></td>
+<td><span class="code">23810</span></td>
+<td><span class="name">인팩</span></td>
+<td><span class="number">10,650</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">3</span></td>
 </tr>
 <tr>
 <td><span class="rank ">24</span></td>
-<td><span class="code">6910</span></td>
-<td><span class="name">보성파워텍</span></td>
-<td><span class="number">5,650</span></td>
-<td><span class="number positive">+0.6%</span></td>
-<td><span class="number negative">-3.9%</span></td>
-<td><span class="number negative">-4.3%</span></td>
-<td><span class="number">0.81</span></td>
-<td><span class="number">0.0223</span></td>
+<td><span class="code">6800</span></td>
+<td><span class="name">미래에셋증권</span></td>
+<td><span class="number">27,650</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">3</span></td>
 </tr>
 <tr>
 <td><span class="rank ">25</span></td>
-<td><span class="code">39440</span></td>
-<td><span class="name">에스티아이</span></td>
-<td><span class="number">33,150</span></td>
-<td><span class="number negative">-0.5%</span></td>
-<td><span class="number negative">-1.2%</span></td>
-<td><span class="number positive">+2.9%</span></td>
-<td><span class="number">0.71</span></td>
-<td><span class="number">0.0222</span></td>
+<td><span class="code">34020</span></td>
+<td><span class="name">두산에너빌리티</span></td>
+<td><span class="number">83,700</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">3</span></td>
 </tr>
 <tr>
 <td><span class="rank ">26</span></td>
-<td><span class="code">131970</span></td>
-<td><span class="name">두산테스나</span></td>
-<td><span class="number">52,400</span></td>
-<td><span class="number negative">-4.7%</span></td>
-<td><span class="number negative">-3.4%</span></td>
-<td><span class="number negative">-7.5%</span></td>
-<td><span class="number">0.71</span></td>
-<td><span class="number">0.0221</span></td>
+<td><span class="code">126340</span></td>
+<td><span class="name">비나텍</span></td>
+<td><span class="number">83,200</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">4</span></td>
+<td><span class="number">3</span></td>
 </tr>
 <tr>
 <td><span class="rank ">27</span></td>
-<td><span class="code">211270</span></td>
-<td><span class="name">AP위성</span></td>
-<td><span class="number">14,140</span></td>
-<td><span class="number negative">-4.4%</span></td>
-<td><span class="number negative">-3.4%</span></td>
-<td><span class="number negative">-12.4%</span></td>
-<td><span class="number">0.81</span></td>
-<td><span class="number">0.0219</span></td>
+<td><span class="code">54540</span></td>
+<td><span class="name">삼영엠텍</span></td>
+<td><span class="number">15,280</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">4</span></td>
+<td><span class="number">3</span></td>
 </tr>
 <tr>
 <td><span class="rank ">28</span></td>
-<td><span class="code">42700</span></td>
-<td><span class="name">한미반도체</span></td>
-<td><span class="number">186,700</span></td>
-<td><span class="number negative">-13.1%</span></td>
-<td><span class="number negative">-11.2%</span></td>
-<td><span class="number negative">-20.5%</span></td>
-<td><span class="number">0.82</span></td>
-<td><span class="number">0.0217</span></td>
+<td><span class="code">71970</span></td>
+<td><span class="name">HD현대마린엔진</span></td>
+<td><span class="number">96,200</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
-<td><span class="number">7</span></td>
+<td><span class="number">3</span></td>
 </tr>
 <tr>
 <td><span class="rank ">29</span></td>
 <td><span class="code">97230</span></td>
 <td><span class="name">HJ중공업</span></td>
-<td><span class="number">24,050</span></td>
-<td><span class="number negative">-1.2%</span></td>
-<td><span class="number negative">-1.8%</span></td>
-<td><span class="number negative">-4.2%</span></td>
-<td><span class="number">0.74</span></td>
-<td><span class="number">0.0211</span></td>
+<td><span class="number">24,650</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">3</span></td>
 </tr>
 <tr>
 <td><span class="rank ">30</span></td>
-<td><span class="code">34020</span></td>
-<td><span class="name">두산에너빌리티</span></td>
-<td><span class="number">83,900</span></td>
-<td><span class="number negative">-0.5%</span></td>
-<td><span class="number negative">-5.4%</span></td>
-<td><span class="number negative">-8.6%</span></td>
-<td><span class="number">0.81</span></td>
-<td><span class="number">0.0210</span></td>
+<td><span class="code">39490</span></td>
+<td><span class="name">키움증권</span></td>
+<td><span class="number">306,500</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number ">0.0%</span></td>
+<td><span class="number">0.00</span></td>
+<td><span class="number">0.0277</span></td>
 <td><span class="tag tag-mixed">Mixed</span></td>
 <td><span class="number">3</span></td>
 </tr>
 </tbody></table>
-            </div>
-        </div>
+                    </div>
+                </div>
 
-        <div class="section">
-            <h2 class="section-title">📊 Source: Probability (확률 기반)</h2>
-            <div class="table-wrapper">
-                <table>
+                <div class="section">
+                    <h2 class="section-title">&#128202; Source: Probability (&#54869;&#47456; &#44592;&#48152;)</h2>
+                    <div class="table-wrapper">
+                        <table>
 <thead><tr>
 <th>#</th>
 <th>코드</th>
@@ -808,13 +915,13 @@
 <td><span class="number">1,528</span></td>
 </tr>
 </tbody></table>
-            </div>
-        </div>
+                    </div>
+                </div>
 
-        <div class="section">
-            <h2 class="section-title">📈 Source: ChartKing (차트 기반)</h2>
-            <div class="table-wrapper">
-                <table>
+                <div class="section">
+                    <h2 class="section-title">&#128200; Source: ChartKing (&#52264;&#53944; &#44592;&#48152;)</h2>
+                    <div class="table-wrapper">
+                        <table>
 <thead><tr>
 <th>#</th>
 <th>코드</th>
@@ -1003,13 +1110,13 @@
 <td><span class="number">14,720</span></td>
 </tr>
 </tbody></table>
-            </div>
-        </div>
+                    </div>
+                </div>
 
-        <div class="section">
-            <h2 class="section-title">🔥 Source: Real (실시간 모멘텀)</h2>
-            <div class="table-wrapper">
-                <table>
+                <div class="section">
+                    <h2 class="section-title">&#128293; Source: Real (&#49892;&#49884;&#44036; &#47784;&#47704;&#53568;)</h2>
+                    <div class="table-wrapper">
+                        <table>
 <thead><tr>
 <th>#</th>
 <th>코드</th>
@@ -1021,208 +1128,497 @@
 <td><span class="rank rank-1">1</span></td>
 <td><span class="code">295310</span></td>
 <td><span class="name">에이치브이엠</span></td>
-<td><span class="number">69,750</span></td>
+<td><span class="number">68,200</span></td>
 </tr>
 <tr>
 <td><span class="rank rank-2">2</span></td>
 <td><span class="code">347700</span></td>
 <td><span class="name">스피어</span></td>
-<td><span class="number">18,630</span></td>
+<td><span class="number">18,120</span></td>
 </tr>
 <tr>
 <td><span class="rank rank-3">3</span></td>
 <td><span class="code">99320</span></td>
 <td><span class="name">쎄트렉아이</span></td>
-<td><span class="number">109,500</span></td>
+<td><span class="number">109,700</span></td>
 </tr>
 <tr>
 <td><span class="rank ">4</span></td>
-<td><span class="code">451760</span></td>
-<td><span class="name">컨텍</span></td>
-<td><span class="number">14,050</span></td>
+<td><span class="code">65660</span></td>
+<td><span class="name">안트로젠</span></td>
+<td><span class="number">50,500</span></td>
 </tr>
 <tr>
 <td><span class="rank ">5</span></td>
-<td><span class="code">475830</span></td>
-<td><span class="name">오름테라퓨틱</span></td>
-<td><span class="number">141,200</span></td>
+<td><span class="code">451760</span></td>
+<td><span class="name">컨텍</span></td>
+<td><span class="number">14,200</span></td>
 </tr>
 <tr>
 <td><span class="rank ">6</span></td>
+<td><span class="code">475830</span></td>
+<td><span class="name">오름테라퓨틱</span></td>
+<td><span class="number">140,700</span></td>
+</tr>
+<tr>
+<td><span class="rank ">7</span></td>
 <td><span class="code">80220</span></td>
 <td><span class="name">제주반도체</span></td>
 <td><span class="number">32,800</span></td>
 </tr>
 <tr>
-<td><span class="rank ">7</span></td>
-<td><span class="code">42700</span></td>
-<td><span class="name">한미반도체</span></td>
-<td><span class="number">193,500</span></td>
+<td><span class="rank ">8</span></td>
+<td><span class="code">174900</span></td>
+<td><span class="name">앱클론</span></td>
+<td><span class="number">58,000</span></td>
 </tr>
 <tr>
-<td><span class="rank ">8</span></td>
+<td><span class="rank ">9</span></td>
 <td><span class="code">660</span></td>
 <td><span class="name">SK하이닉스</span></td>
 <td><span class="number">780,000</span></td>
 </tr>
 <tr>
-<td><span class="rank ">9</span></td>
-<td><span class="code">174900</span></td>
-<td><span class="name">앱클론</span></td>
-<td><span class="number">59,300</span></td>
+<td><span class="rank ">10</span></td>
+<td><span class="code">79550</span></td>
+<td><span class="name">LIG넥스원</span></td>
+<td><span class="number">528,000</span></td>
 </tr>
 <tr>
-<td><span class="rank ">10</span></td>
+<td><span class="rank ">11</span></td>
+<td><span class="code">397030</span></td>
+<td><span class="name">에이프릴바이오</span></td>
+<td><span class="number">56,600</span></td>
+</tr>
+<tr>
+<td><span class="rank ">12</span></td>
 <td><span class="code">95610</span></td>
 <td><span class="name">테스</span></td>
 <td><span class="number">57,200</span></td>
 </tr>
 <tr>
-<td><span class="rank ">11</span></td>
-<td><span class="code">79550</span></td>
-<td><span class="name">LIG넥스원</span></td>
-<td><span class="number">527,000</span></td>
-</tr>
-<tr>
-<td><span class="rank ">12</span></td>
-<td><span class="code">397030</span></td>
-<td><span class="name">에이프릴바이오</span></td>
-<td><span class="number">56,100</span></td>
-</tr>
-<tr>
 <td><span class="rank ">13</span></td>
-<td><span class="code">29460</span></td>
-<td><span class="name">케이씨</span></td>
-<td><span class="number">28,750</span></td>
-</tr>
-<tr>
-<td><span class="rank ">14</span></td>
-<td><span class="code">304360</span></td>
-<td><span class="name">에스바이오메딕스</span></td>
-<td><span class="number">40,250</span></td>
-</tr>
-<tr>
-<td><span class="rank ">15</span></td>
-<td><span class="code">482630</span></td>
-<td><span class="name">삼양엔씨켐</span></td>
-<td><span class="number">27,900</span></td>
-</tr>
-<tr>
-<td><span class="rank ">16</span></td>
 <td><span class="code">1430</span></td>
 <td><span class="name">세아베스틸지주</span></td>
 <td><span class="number">57,600</span></td>
 </tr>
 <tr>
-<td><span class="rank ">17</span></td>
+<td><span class="rank ">14</span></td>
 <td><span class="code">170920</span></td>
 <td><span class="name">엘티씨</span></td>
-<td><span class="number">22,400</span></td>
+<td><span class="number">22,450</span></td>
+</tr>
+<tr>
+<td><span class="rank ">15</span></td>
+<td><span class="code">190510</span></td>
+<td><span class="name">나무가</span></td>
+<td><span class="number">24,800</span></td>
+</tr>
+<tr>
+<td><span class="rank ">16</span></td>
+<td><span class="code">47810</span></td>
+<td><span class="name">한국항공우주</span></td>
+<td><span class="number">140,000</span></td>
+</tr>
+<tr>
+<td><span class="rank ">17</span></td>
+<td><span class="code">207940</span></td>
+<td><span class="name">삼성바이오로직스</span></td>
+<td><span class="number">1,883,000</span></td>
 </tr>
 <tr>
 <td><span class="rank ">18</span></td>
-<td><span class="code">36540</span></td>
-<td><span class="name">SFA반도체</span></td>
-<td><span class="number">5,870</span></td>
+<td><span class="code">482630</span></td>
+<td><span class="name">삼양엔씨켐</span></td>
+<td><span class="number">27,800</span></td>
 </tr>
 <tr>
 <td><span class="rank ">19</span></td>
-<td><span class="code">190510</span></td>
-<td><span class="name">나무가</span></td>
-<td><span class="number">24,750</span></td>
+<td><span class="code">36540</span></td>
+<td><span class="name">SFA반도체</span></td>
+<td><span class="number">5,780</span></td>
 </tr>
 <tr>
 <td><span class="rank ">20</span></td>
-<td><span class="code">47810</span></td>
-<td><span class="name">한국항공우주</span></td>
-<td><span class="number">141,400</span></td>
+<td><span class="code">32940</span></td>
+<td><span class="name">원익</span></td>
+<td><span class="number">12,200</span></td>
 </tr>
 <tr>
 <td><span class="rank ">21</span></td>
-<td><span class="code">322310</span></td>
-<td><span class="name">오로스테크놀로지</span></td>
-<td><span class="number">27,150</span></td>
+<td><span class="code">249420</span></td>
+<td><span class="name">일동제약</span></td>
+<td><span class="number">41,750</span></td>
 </tr>
 <tr>
 <td><span class="rank ">22</span></td>
-<td><span class="code">32940</span></td>
-<td><span class="name">원익</span></td>
-<td><span class="number">12,180</span></td>
-</tr>
-<tr>
-<td><span class="rank ">23</span></td>
-<td><span class="code">146320</span></td>
-<td><span class="name">비씨엔씨</span></td>
-<td><span class="number">15,390</span></td>
-</tr>
-<tr>
-<td><span class="rank ">24</span></td>
-<td><span class="code">207940</span></td>
-<td><span class="name">삼성바이오로직스</span></td>
-<td><span class="number">1,889,000</span></td>
-</tr>
-<tr>
-<td><span class="rank ">25</span></td>
-<td><span class="code">11210</span></td>
-<td><span class="name">현대위아</span></td>
-<td><span class="number">87,000</span></td>
-</tr>
-<tr>
-<td><span class="rank ">26</span></td>
 <td><span class="code">230360</span></td>
 <td><span class="name">에코마케팅</span></td>
 <td><span class="number">15,900</span></td>
 </tr>
 <tr>
-<td><span class="rank ">27</span></td>
+<td><span class="rank ">23</span></td>
+<td><span class="code">29460</span></td>
+<td><span class="name">케이씨</span></td>
+<td><span class="number">28,400</span></td>
+</tr>
+<tr>
+<td><span class="rank ">24</span></td>
+<td><span class="code">6800</span></td>
+<td><span class="name">미래에셋증권</span></td>
+<td><span class="number">27,750</span></td>
+</tr>
+<tr>
+<td><span class="rank ">25</span></td>
+<td><span class="code">11210</span></td>
+<td><span class="name">현대위아</span></td>
+<td><span class="number">84,800</span></td>
+</tr>
+<tr>
+<td><span class="rank ">26</span></td>
 <td><span class="code">27360</span></td>
 <td><span class="name">아주IB투자</span></td>
-<td><span class="number">3,405</span></td>
+<td><span class="number">3,355</span></td>
+</tr>
+<tr>
+<td><span class="rank ">27</span></td>
+<td><span class="code">352820</span></td>
+<td><span class="name">하이브</span></td>
+<td><span class="number">332,500</span></td>
 </tr>
 <tr>
 <td><span class="rank ">28</span></td>
-<td><span class="code">253590</span></td>
-<td><span class="name">네오셈</span></td>
-<td><span class="number">12,370</span></td>
+<td><span class="code">128940</span></td>
+<td><span class="name">한미약품</span></td>
+<td><span class="number">463,500</span></td>
 </tr>
 <tr>
 <td><span class="rank ">29</span></td>
-<td><span class="code">41960</span></td>
-<td><span class="name">코미팜</span></td>
-<td><span class="number">8,120</span></td>
+<td><span class="code">37460</span></td>
+<td><span class="name">삼지전자</span></td>
+<td><span class="number">16,390</span></td>
 </tr>
 <tr>
 <td><span class="rank ">30</span></td>
-<td><span class="code">249420</span></td>
-<td><span class="name">일동제약</span></td>
-<td><span class="number">41,600</span></td>
+<td><span class="code">253590</span></td>
+<td><span class="name">네오셈</span></td>
+<td><span class="number">12,220</span></td>
 </tr>
 </tbody></table>
-            </div>
-        </div>
+                    </div>
+                </div>
 
-        <div class="section">
-            <h2 class="section-title">Download Data</h2>
-            <div class="history-link" style="text-align: left; padding: 15px;">
-                <p style="margin-bottom: 10px; color: #888;">Ensemble Result:</p>
-                <a href="top30_2026_01_08_1200.csv" download>📊 Ensemble Result CSV</a>
-                <p style="margin: 15px 0 10px; color: #888;">Source Data (Input):</p>
-                <a href="sources/" target="_blank">📁 Source CSVs (probability, chartking, real)</a>
+                <div class="section">
+                    <h2 class="section-title">Download Data</h2>
+                    <div class="history-link" style="text-align: left; padding: 15px;">
+                        <p style="margin-bottom: 10px; color: #888;">Ensemble Result:</p>
+                        <a href="top30_2026_01_08_1545.csv" download>&#128202; Ensemble Result CSV</a>
+                        <p style="margin: 15px 0 10px; color: #888;">Source Data (Input):</p>
+                        <a href="sources/" target="_blank">&#128193; Source CSVs</a>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <footer>
-            <p>Powered by Deep-Ensemble Stock Scanner</p>
-            <p>Models: Chronos-Bolt, TTM, Moirai (Zero-shot Foundation Models)</p>
-            <div class="disclaimer">
-                ⚠️ 투자 참고용 자료입니다. 과거 성과가 미래 수익을 보장하지 않습니다.
-                분산투자하고 감당 가능한 범위 내에서 투자하세요.
+            <!-- MACRO TAB -->
+            <div class="tab-content" id="tab-macro">
+                <header>
+                    <h1 class="macro-header">ETF Sector Momentum Scanner</h1>
+                    <div class="subtitle">ETFKing | Sector & Category Analysis</div>
+                    <div class="meta">
+                        <span>Date: <strong>2026-01-08</strong></span>
+                        <span>|</span>
+                        <span>Generated: <strong>2026-01-08 15:45:43</strong></span>
+                    </div>
+                </header>
+
+                <div class="section macro-section">
+                    <h2 class="section-title">&#127760; ETF Sector Rankings</h2>
+                    <div class="table-wrapper">
+                        <table>
+<thead><tr>
+<th>순위</th>
+<th>변동</th>
+<th>섹터/카테고리</th>
+<th>모멘텀</th>
+<th>변동성</th>
+<th>종합점수</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="rank rank-1">1</span></td>
+<td><span class="change-same">─</span></td>
+<td><span class="category">Pharmaceutical</span></td>
+<td><span class="number">14.11</span></td>
+<td><span class="number">14.99</span></td>
+<td><span class="number positive">+1.87</span></td>
+</tr>
+<tr>
+<td><span class="rank rank-2">2</span></td>
+<td><span class="change-up">▲+6</span></td>
+<td><span class="category">Healthcare</span></td>
+<td><span class="number">12.98</span></td>
+<td><span class="number">14.99</span></td>
+<td><span class="number positive">+1.63</span></td>
+</tr>
+<tr>
+<td><span class="rank rank-3">3</span></td>
+<td><span class="change-up">▲+1</span></td>
+<td><span class="category">Biotechnology</span></td>
+<td><span class="number">17.90</span></td>
+<td><span class="number">23.32</span></td>
+<td><span class="number positive">+1.00</span></td>
+</tr>
+<tr>
+<td><span class="rank ">4</span></td>
+<td><span class="change-down">▼-2</span></td>
+<td><span class="category">Silver Miners</span></td>
+<td><span class="number">31.70</span></td>
+<td><span class="number">46.82</span></td>
+<td><span class="number positive">+0.91</span></td>
+</tr>
+<tr>
+<td><span class="rank ">5</span></td>
+<td><span class="change-up">▲+4</span></td>
+<td><span class="category">Metals & Mining</span></td>
+<td><span class="number">22.44</span></td>
+<td><span class="number">38.06</span></td>
+<td><span class="number positive">+0.90</span></td>
+</tr>
+<tr>
+<td><span class="rank ">6</span></td>
+<td><span class="change-down">▼-3</span></td>
+<td><span class="category">Materials</span></td>
+<td><span class="number">21.03</span></td>
+<td><span class="number">32.81</span></td>
+<td><span class="number positive">+0.83</span></td>
+</tr>
+<tr>
+<td><span class="rank ">7</span></td>
+<td><span class="change-up">▲+6</span></td>
+<td><span class="category">Medical Devices</span></td>
+<td><span class="number">9.24</span></td>
+<td><span class="number">16.35</span></td>
+<td><span class="number positive">+0.79</span></td>
+</tr>
+<tr>
+<td><span class="rank ">8</span></td>
+<td><span class="change-down">▼-2</span></td>
+<td><span class="category">Financials</span></td>
+<td><span class="number">7.79</span></td>
+<td><span class="number">15.58</span></td>
+<td><span class="number positive">+0.71</span></td>
+</tr>
+<tr>
+<td><span class="rank ">9</span></td>
+<td><span class="change-up">▲+1</span></td>
+<td><span class="category">Industrials</span></td>
+<td><span class="number">8.51</span></td>
+<td><span class="number">19.13</span></td>
+<td><span class="number positive">+0.65</span></td>
+</tr>
+<tr>
+<td><span class="rank ">10</span></td>
+<td><span class="change-down">▼-3</span></td>
+<td><span class="category">Leisure & Entertainment</span></td>
+<td><span class="number">10.06</span></td>
+<td><span class="number">34.23</span></td>
+<td><span class="number positive">+0.28</span></td>
+</tr>
+<tr>
+<td><span class="rank ">11</span></td>
+<td><span class="change-same">─</span></td>
+<td><span class="category">Banks</span></td>
+<td><span class="number">6.43</span></td>
+<td><span class="number">19.34</span></td>
+<td><span class="number positive">+0.24</span></td>
+</tr>
+<tr>
+<td><span class="rank ">12</span></td>
+<td><span class="change-same">─</span></td>
+<td><span class="category">Semiconductors</span></td>
+<td><span class="number">12.92</span></td>
+<td><span class="number">32.15</span></td>
+<td><span class="number positive">+0.21</span></td>
+</tr>
+<tr>
+<td><span class="rank ">13</span></td>
+<td><span class="change-up">▲+3</span></td>
+<td><span class="category">Mortgage REITs</span></td>
+<td><span class="number">3.38</span></td>
+<td><span class="number">10.96</span></td>
+<td><span class="number positive">+0.15</span></td>
+</tr>
+<tr>
+<td><span class="rank ">14</span></td>
+<td><span class="change-down">▼-9</span></td>
+<td><span class="category">Telecom</span></td>
+<td><span class="number">4.54</span></td>
+<td><span class="number">11.05</span></td>
+<td><span class="number positive">+0.01</span></td>
+</tr>
+<tr>
+<td><span class="rank ">15</span></td>
+<td><span class="change-up">▲+8</span></td>
+<td><span class="category">Uranium</span></td>
+<td><span class="number">10.95</span></td>
+<td><span class="number">51.81</span></td>
+<td><span class="number negative">-0.13</span></td>
+</tr>
+<tr>
+<td><span class="rank ">16</span></td>
+<td><span class="change-down">▼-2</span></td>
+<td><span class="category">Clean Energy</span></td>
+<td><span class="number">8.14</span></td>
+<td><span class="number">33.98</span></td>
+<td><span class="number negative">-0.24</span></td>
+</tr>
+<tr>
+<td><span class="rank ">17</span></td>
+<td><span class="change-down">▼-2</span></td>
+<td><span class="category">Consumer Discretionary</span></td>
+<td><span class="number">3.78</span></td>
+<td><span class="number">38.81</span></td>
+<td><span class="number negative">-0.31</span></td>
+</tr>
+<tr>
+<td><span class="rank ">18</span></td>
+<td><span class="change-up">▲+6</span></td>
+<td><span class="category">Nuclear Energy</span></td>
+<td><span class="number">3.81</span></td>
+<td><span class="number">37.49</span></td>
+<td><span class="number negative">-0.53</span></td>
+</tr>
+<tr>
+<td><span class="rank ">19</span></td>
+<td><span class="change-down">▼-1</span></td>
+<td><span class="category">Electric Energy Infrastructure</span></td>
+<td><span class="number">2.48</span></td>
+<td><span class="number">22.21</span></td>
+<td><span class="number negative">-0.53</span></td>
+</tr>
+<tr>
+<td><span class="rank ">20</span></td>
+<td><span class="change-same">─</span></td>
+<td><span class="category">Utilities</span></td>
+<td><span class="number">1.35</span></td>
+<td><span class="number">13.49</span></td>
+<td><span class="number negative">-0.54</span></td>
+</tr>
+<tr>
+<td><span class="rank ">21</span></td>
+<td><span class="change-up">▲+1</span></td>
+<td><span class="category">Energy</span></td>
+<td><span class="number">2.13</span></td>
+<td><span class="number">17.57</span></td>
+<td><span class="number negative">-0.55</span></td>
+</tr>
+<tr>
+<td><span class="rank ">22</span></td>
+<td><span class="change-down">▼-5</span></td>
+<td><span class="category">Technology</span></td>
+<td><span class="number">2.88</span></td>
+<td><span class="number">17.72</span></td>
+<td><span class="number negative">-0.57</span></td>
+</tr>
+<tr>
+<td><span class="rank ">23</span></td>
+<td><span class="change-down">▼-4</span></td>
+<td><span class="category">Consumer Staples</span></td>
+<td><span class="number">1.50</span></td>
+<td><span class="number">12.41</span></td>
+<td><span class="number negative">-0.59</span></td>
+</tr>
+<tr>
+<td><span class="rank ">24</span></td>
+<td><span class="change-up">▲+1</span></td>
+<td><span class="category">Real Estate</span></td>
+<td><span class="number">0.12</span></td>
+<td><span class="number">10.44</span></td>
+<td><span class="number negative">-0.67</span></td>
+</tr>
+<tr>
+<td><span class="rank ">25</span></td>
+<td><span class="change-down">▼-4</span></td>
+<td><span class="category">Cloud Computing</span></td>
+<td><span class="number">1.74</span></td>
+<td><span class="number">21.79</span></td>
+<td><span class="number negative">-0.83</span></td>
+</tr>
+<tr>
+<td><span class="rank ">26</span></td>
+<td><span class="change-up">▲+1</span></td>
+<td><span class="category">Internet</span></td>
+<td><span class="number">-0.40</span></td>
+<td><span class="number">19.52</span></td>
+<td><span class="number negative">-0.89</span></td>
+</tr>
+<tr>
+<td><span class="rank ">27</span></td>
+<td><span class="change-down">▼-1</span></td>
+<td><span class="category">Automotive</span></td>
+<td><span class="number">-12.05</span></td>
+<td><span class="number">85.47</span></td>
+<td><span class="number negative">-0.96</span></td>
+</tr>
+<tr>
+<td><span class="rank ">28</span></td>
+<td><span class="change-up">▲+1</span></td>
+<td><span class="category">Cryptocurrency</span></td>
+<td><span class="number">-8.82</span></td>
+<td><span class="number">43.30</span></td>
+<td><span class="number negative">-1.34</span></td>
+</tr>
+<tr>
+<td><span class="rank ">29</span></td>
+<td><span class="change-down">▼-1</span></td>
+<td><span class="category">Software</span></td>
+<td><span class="number">-4.89</span></td>
+<td><span class="number">19.55</span></td>
+<td><span class="number negative">-1.65</span></td>
+</tr>
+</tbody></table>
+                    </div>
+                </div>
+
+                <div class="section macro-section">
+                    <h2 class="section-title">&#128200; Score Legend</h2>
+                    <div style="padding: 15px; color: #888;">
+                        <p><strong>Momentum Score:</strong> &#51333;&#54633; &#47784;&#47704;&#53568; &#51648;&#54364; (&#45458;&#51012;&#49688;&#47197; &#44053;&#54620; &#49345;&#49849; &#52628;&#49464;)</p>
+                        <p><strong>Volatility Score:</strong> &#48320;&#46041;&#49457; &#51648;&#54364; (&#45230;&#51012;&#49688;&#47197; &#50504;&#51221;&#51201;)</p>
+                        <p><strong>Composite Score:</strong> &#51333;&#54633; &#51216;&#49688; (&#47784;&#47704;&#53568;/&#48320;&#46041;&#49457; &#44256;&#47140;)</p>
+                    </div>
+                </div>
             </div>
-            <div class="history-link">
-                <a href="history.html">View History</a>
-                <a href="https://github.com/github.com/avantchoi82/chronosbolt-moirai-ttm">GitHub</a>
-            </div>
-        </footer>
+
+            <footer>
+                <p>Powered by Deep-Ensemble Stock Scanner & ETFKing</p>
+                <p>Models: Chronos-Bolt, TTM, Moirai (Zero-shot Foundation Models)</p>
+                <div class="disclaimer">
+                    &#9888;&#65039; &#53804;&#51088; &#52280;&#44256;&#50857; &#51088;&#47308;&#51077;&#45768;&#45796;. &#44284;&#44144; &#49457;&#44284;&#44032; &#48120;&#47000; &#49688;&#51061;&#51012; &#48372;&#51109;&#54616;&#51648; &#50506;&#49845;&#45768;&#45796;.
+                    &#48516;&#49328;&#53804;&#51088;&#54616;&#44256; &#44048;&#45817; &#44032;&#45733;&#54620; &#48276;&#50948; &#45236;&#50640;&#49436; &#53804;&#51088;&#54616;&#49464;&#50836;.
+                </div>
+                <div class="history-link">
+                    <a href="history.html">View History</a>
+                    <a href="https://github.com/github.com/avantchoi82/chronosbolt-moirai-ttm">GitHub</a>
+                </div>
+            </footer>
+        </div>
     </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Deactivate all buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+            document.getElementById('btn-' + tabName).classList.add('active');
+        }
+    </script>
 </body>
 </html>
