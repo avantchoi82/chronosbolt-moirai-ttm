@@ -1,6 +1,7 @@
 """HTML Page Generator for GitHub Pages.
 
-Generates HTML report pages from ensemble scanner results.
+Generates HTML report pages from stock scanner source data.
+Features left sidebar navigation with Stock/Macro tabs.
 """
 
 from __future__ import annotations
@@ -22,7 +23,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep-Ensemble Scanner - {date_str}</title>
+    <title>Stock Scanner - {date_str}</title>
     <style>
         * {{
             margin: 0;
@@ -34,12 +35,73 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
             color: #e4e4e4;
             min-height: 100vh;
+            display: flex;
+        }}
+
+        /* Sidebar Navigation */
+        .sidebar {{
+            width: 80px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            z-index: 1000;
+        }}
+        .nav-btn {{
+            width: 60px;
+            height: 60px;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            color: #888;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }}
+        .nav-btn:hover {{
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }}
+        .nav-btn.active {{
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            color: #1a1a2e;
+        }}
+        .nav-btn .icon {{
+            font-size: 1.5rem;
+        }}
+
+        /* Main Content */
+        .main-content {{
+            margin-left: 80px;
+            flex: 1;
             padding: 20px;
+            width: calc(100% - 80px);
         }}
         .container {{
             max-width: 1400px;
             margin: 0 auto;
         }}
+
+        /* Tab Content */
+        .tab-content {{
+            display: none;
+        }}
+        .tab-content.active {{
+            display: block;
+        }}
+
         header {{
             text-align: center;
             margin-bottom: 30px;
@@ -120,6 +182,18 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .name {{
             font-weight: 500;
         }}
+        .date {{
+            color: #888;
+            font-size: 0.85rem;
+        }}
+        .pattern {{
+            color: #ffd93d;
+            font-weight: 500;
+        }}
+        .market {{
+            color: #888;
+            font-size: 0.85rem;
+        }}
         .positive {{
             color: #00ff88;
         }}
@@ -156,6 +230,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .tag-mixed {{
             background: #555;
             color: #ccc;
+        }}
+        .change-up {{
+            color: #00ff88;
+        }}
+        .change-down {{
+            color: #ff4757;
+        }}
+        .change-same {{
+            color: #888;
         }}
         footer {{
             text-align: center;
@@ -202,57 +285,282 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             gap: 5px;
             font-size: 0.8rem;
         }}
+
+        /* Macro tab specific styles */
+        .macro-header {{
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
+        .macro-section .section-title {{
+            color: #ffd93d;
+            border-left-color: #ffd93d;
+        }}
+        .macro-section th {{
+            background: rgba(255, 217, 61, 0.15);
+            color: #ffd93d;
+        }}
+        .category {{
+            font-weight: 600;
+            color: #ffd93d;
+        }}
+        .fred-image-wrapper {{
+            padding: 15px;
+            text-align: center;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+        }}
+        .fred-image-wrapper img {{
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }}
+        .fred-section .section-title {{
+            color: #00d4ff;
+            border-left-color: #00d4ff;
+        }}
+
+        /* ML tab specific styles */
+        .ml-header {{
+            background: linear-gradient(90deg, #a855f7, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
+        .ml-section .section-title {{
+            color: #a855f7;
+            border-left-color: #a855f7;
+        }}
+        .ml-section th {{
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+        }}
+        .risk-flag {{
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin: 1px;
+        }}
+        .risk-high_vol {{
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }}
+        .risk-high_risk {{
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }}
+        .risk-low_volume {{
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+        }}
+        .risk-recent_drop {{
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }}
+
+        /* AI Summary row styles */
+        .summary-row {{
+            background: rgba(0, 212, 255, 0.05) !important;
+        }}
+        .summary-row:hover {{
+            background: rgba(0, 212, 255, 0.08) !important;
+        }}
+        .summary-cell {{
+            padding: 12px 15px !important;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }}
+        .summary-text {{
+            color: #e4e4e4;
+            margin-bottom: 8px;
+        }}
+        .summary-text .icon {{
+            margin-right: 6px;
+        }}
+        .keywords {{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }}
+        .keyword-tag {{
+            background: rgba(0, 212, 255, 0.15);
+            color: #00d4ff;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }}
+        .target-prices {{
+            color: #ffd93d;
+            font-size: 0.8rem;
+        }}
+        .target-prices .icon {{
+            margin-right: 6px;
+        }}
+        .target-price-item {{
+            display: inline-block;
+            margin-right: 12px;
+        }}
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Deep-Ensemble Stock Scanner v3.0</h1>
-            <div class="subtitle">Chronos-Bolt + TTM + Moirai | Delta vs KOSPI</div>
-            <div class="meta">
-                <span>Date: <strong>{date_str}</strong></span>
-                <span>|</span>
-                <span>Generated: <strong>{generated_at}</strong></span>
-            </div>
-            <div class="legend">
-                <div class="legend-item"><span class="tag tag-short-term-surge">Short-term Surge</span> Short &gt; 5%</div>
-                <div class="legend-item"><span class="tag tag-long-term-growth">Long-term Growth</span> Long &gt; 15%</div>
-                <div class="legend-item"><span class="tag tag-high-confidence">High Confidence</span> Agreement &gt; 85%</div>
-                <div class="legend-item"><span class="tag tag-balanced">Balanced</span> Both positive</div>
-                <div class="legend-item"><span class="tag tag-mixed">Mixed</span> Other</div>
-            </div>
-        </header>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <button class="nav-btn active" onclick="showTab('stocks')" id="btn-stocks">
+            <span class="icon">&#128200;</span>
+            <span>&#51333;&#47785;</span>
+        </button>
+        <button class="nav-btn" onclick="showTab('ml')" id="btn-ml">
+            <span class="icon">&#129302;</span>
+            <span>ML</span>
+        </button>
+        <button class="nav-btn" onclick="showTab('macro')" id="btn-macro">
+            <span class="icon">&#127760;</span>
+            <span>&#47588;&#53356;&#47196;</span>
+        </button>
+    </nav>
 
-        <div class="section">
-            <h2 class="section-title">Top {top_n} Momentum Picks (Risk-Adjusted)</h2>
-            <div class="table-wrapper">
-                {top_n_table}
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+
+            <!-- STOCKS TAB -->
+            <div class="tab-content active" id="tab-stocks">
+                <header>
+                    <h1>Stock Scanner Source Data</h1>
+                    <div class="subtitle">Real + ChartKing + 단순모멘텀 | Latest Picks</div>
+                    <div class="meta">
+                        <span>Date: <strong>{date_str}</strong></span>
+                        <span>|</span>
+                        <span>Generated: <strong>{generated_at}</strong></span>
+                    </div>
+                </header>
+
+                <div class="section">
+                    <h2 class="section-title">&#128293; Real (&#49892;&#49884;&#44036; &#47784;&#47704;&#53568;)</h2>
+                    <div class="table-wrapper">
+                        {real_table}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">&#128200; ChartKing (Best)</h2>
+                    <div class="table-wrapper">
+                        {chartking_table}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">&#128640; &#45800;&#49692;&#47784;&#47704;&#53568; &#44592;&#48152;</h2>
+                    <div class="table-wrapper">
+                        {xgboost_table}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Download Data</h2>
+                    <div class="history-link" style="text-align: left; padding: 15px;">
+                        <p style="margin-bottom: 10px; color: #888;">Source CSV Files:</p>
+                        <a href="sources/" target="_blank">&#128193; Download Source CSVs</a>
+                    </div>
+                </div>
             </div>
+
+            <!-- ML TAB -->
+            <div class="tab-content" id="tab-ml">
+                <header>
+                    <h1 class="ml-header">Machine Learning Stock Scanner</h1>
+                    <div class="subtitle">LGBM | ML-based Stock Recommendations</div>
+                    <div class="meta">
+                        <span>Date: <strong>{date_str}</strong></span>
+                        <span>|</span>
+                        <span>Generated: <strong>{generated_at}</strong></span>
+                    </div>
+                </header>
+
+                <div class="section ml-section">
+                    <h2 class="section-title">&#129302; LGBM Top30 Recommendations</h2>
+                    <div class="table-wrapper">
+                        {lgbm_table}
+                    </div>
+                </div>
+            </div>
+
+            <!-- MACRO TAB -->
+            <div class="tab-content" id="tab-macro">
+                <header>
+                    <h1 class="macro-header">ETF Sector Momentum Scanner</h1>
+                    <div class="subtitle">ETFKing | Sector & Category Analysis</div>
+                    <div class="meta">
+                        <span>Date: <strong>{date_str}</strong></span>
+                        <span>|</span>
+                        <span>Generated: <strong>{generated_at}</strong></span>
+                    </div>
+                </header>
+
+                <div class="section macro-section">
+                    <h2 class="section-title">&#127482;&#127480; US ETF Sector Rankings</h2>
+                    <div class="table-wrapper">
+                        {macro_table}
+                    </div>
+                </div>
+
+                <div class="section macro-section korea-section">
+                    <h2 class="section-title">&#127472;&#127479; Korea ETF Sector Rankings</h2>
+                    <div class="table-wrapper">
+                        {korea_macro_table}
+                    </div>
+                </div>
+
+                <div class="section macro-section fred-section">
+                    <h2 class="section-title">&#128202; FRED Liquidity Dashboard (&#50976;&#46041;&#49457; &#45824;&#49884;&#48372;&#46300;)</h2>
+                    <div class="fred-image-wrapper">
+                        {fred_image}
+                    </div>
+                </div>
+
+                <div class="section macro-section">
+                    <h2 class="section-title">&#128200; Score Legend</h2>
+                    <div style="padding: 15px; color: #888;">
+                        <p><strong>Momentum Score:</strong> &#51333;&#54633; &#47784;&#47704;&#53568; &#51648;&#54364; (&#45458;&#51012;&#49688;&#47197; &#44053;&#54620; &#49345;&#49849; &#52628;&#49464;)</p>
+                        <p><strong>Volatility Score:</strong> &#48320;&#46041;&#49457; &#51648;&#54364; (&#45230;&#51012;&#49688;&#47197; &#50504;&#51221;&#51201;)</p>
+                        <p><strong>Composite Score:</strong> &#51333;&#54633; &#51216;&#49688; (&#47784;&#47704;&#53568;/&#48320;&#46041;&#49457; &#44256;&#47140;)</p>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <p>Powered by ChartKing, Real & ETFKing</p>
+                <div class="disclaimer">
+                    &#9888;&#65039; &#53804;&#51088; &#52280;&#44256;&#50857; &#51088;&#47308;&#51077;&#45768;&#45796;. &#44284;&#44144; &#49457;&#44284;&#44032; &#48120;&#47000; &#49688;&#51061;&#51012; &#48372;&#51109;&#54616;&#51648; &#50506;&#49845;&#45768;&#45796;.
+                    &#48516;&#49328;&#53804;&#51088;&#54616;&#44256; &#44048;&#45817; &#44032;&#45733;&#54620; &#48276;&#50948; &#45236;&#50640;&#49436; &#53804;&#51088;&#54616;&#49464;&#50836;.
+                </div>
+                <div class="history-link">
+                    <a href="history.html">View History</a>
+                    <a href="https://github.com/{github_repo}">GitHub</a>
+                </div>
+            </footer>
         </div>
-
-        <div class="section">
-            <h2 class="section-title">Download Data</h2>
-            <div class="history-link" style="text-align: left; padding: 15px;">
-                <p style="margin-bottom: 10px; color: #888;">Ensemble Result:</p>
-                <a href="{result_csv}" download>📊 Ensemble Result CSV</a>
-                <p style="margin: 15px 0 10px; color: #888;">Source Data (Input):</p>
-                <a href="sources/" target="_blank">📁 Source CSVs (probability, chartking, real)</a>
-            </div>
-        </div>
-
-        <footer>
-            <p>Powered by Deep-Ensemble Stock Scanner</p>
-            <p>Models: Chronos-Bolt, TTM, Moirai (Zero-shot Foundation Models)</p>
-            <div class="disclaimer">
-                ⚠️ 투자 참고용 자료입니다. 과거 성과가 미래 수익을 보장하지 않습니다.
-                분산투자하고 감당 가능한 범위 내에서 투자하세요.
-            </div>
-            <div class="history-link">
-                <a href="history.html">View History</a>
-                <a href="https://github.com/{github_repo}">GitHub</a>
-            </div>
-        </footer>
     </div>
+
+    <script>
+        function showTab(tabName) {{
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {{
+                tab.classList.remove('active');
+            }});
+            // Deactivate all buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {{
+                btn.classList.remove('active');
+            }});
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+            document.getElementById('btn-' + tabName).classList.add('active');
+        }}
+    </script>
 </body>
 </html>
 """
@@ -262,7 +570,7 @@ HISTORY_TEMPLATE = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep-Ensemble Scanner - History</title>
+    <title>Stock Scanner - History</title>
     <style>
         * {{
             margin: 0;
@@ -338,7 +646,7 @@ HISTORY_TEMPLATE = """<!DOCTYPE html>
     <div class="container">
         <header>
             <h1>Result History</h1>
-            <p>Deep-Ensemble Stock Scanner</p>
+            <p>Stock Scanner Source Data</p>
         </header>
         <ul class="history-list">
             {history_items}
@@ -460,6 +768,415 @@ def _df_to_html_table(df: pd.DataFrame) -> str:
     return "\n".join(html_parts)
 
 
+def _extract_csv_comments(csv_path: Path) -> list[str]:
+    """Extract comment lines from CSV file.
+
+    Args:
+        csv_path: Path to CSV file
+
+    Returns:
+        List of comment lines (without # prefix)
+    """
+    comments = []
+    try:
+        with open(csv_path, "r", encoding="utf-8-sig") as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("#"):
+                    # Remove # and = decorations, clean up the line
+                    cleaned = line.lstrip("#").strip()
+                    if cleaned and not cleaned.startswith("="):
+                        comments.append(cleaned)
+                else:
+                    break  # Stop at first non-comment line
+    except Exception:
+        pass
+    return comments
+
+
+def _source_df_to_html_table(
+    df: pd.DataFrame,
+    source: str,
+    comments: list[str] | None = None,
+    summaries: dict[str, "StockSummary"] | None = None,
+) -> str:
+    """Convert source DataFrame to HTML table.
+
+    Args:
+        df: Source DataFrame
+        source: Source name (chartking, real)
+        comments: Optional list of comment lines to display
+        summaries: Optional dict of {stock_code: StockSummary} for top 10 stocks
+
+    Returns:
+        HTML table string
+    """
+    if df is None or df.empty:
+        return '<p style="color: #888; padding: 20px;">No data available</p>'
+
+    html_parts = []
+
+    # Add comments section if available
+    if comments:
+        html_parts.append('<div class="csv-comments" style="padding: 10px 15px; margin-bottom: 10px; background: rgba(0, 212, 255, 0.1); border-radius: 8px; font-size: 0.85rem; color: #aaa;">')
+        for comment in comments:
+            html_parts.append(f'<div>{comment}</div>')
+        html_parts.append('</div>')
+
+    # Define columns and display names based on source
+    if source == "chartking":
+        # chartking: 티커, 종목명, 현재가, 신호가, 신호일, 매도예정, 모멘텀(%), 패턴, 손절가, 익절가
+        display_cols = ["티커", "종목명", "현재가", "신호가", "신호일", "매도예정", "모멘텀(%)", "패턴", "손절가", "익절가"]
+        col_names = {
+            "티커": "코드",
+            "종목명": "종목명",
+            "현재가": "현재가",
+            "신호가": "신호가",
+            "신호일": "신호일",
+            "매도예정": "매도예정",
+            "모멘텀(%)": "모멘텀(%)",
+            "패턴": "패턴",
+            "손절가": "손절가",
+            "익절가": "익절가",
+        }
+    elif source == "real":
+        # real: 티커, 종목명, 현재가, 돌파가, 손절가, 익절가, VAM, 돌파일, 패턴, 사유, 시총(억), 이격도
+        display_cols = ["티커", "종목명", "현재가", "돌파가", "손절가", "익절가", "VAM", "돌파일", "패턴", "사유", "시총(억)", "이격도"]
+        col_names = {
+            "티커": "코드",
+            "종목명": "종목명",
+            "현재가": "현재가",
+            "돌파가": "돌파가",
+            "손절가": "손절가",
+            "익절가": "익절가",
+            "VAM": "VAM",
+            "돌파일": "돌파일",
+            "패턴": "패턴",
+            "사유": "사유",
+            "시총(억)": "시총(억)",
+            "이격도": "이격도",
+        }
+    elif source == "xgboost":
+        # xgboost: rank, ticker, name, market, current_price, stop_loss_price, take_profit_price, momentum, score, market_cap
+        display_cols = ["rank", "ticker", "name", "market", "current_price", "take_profit_price", "momentum", "score", "market_cap"]
+        col_names = {
+            "rank": "순위",
+            "ticker": "코드",
+            "name": "종목명",
+            "market": "시장",
+            "current_price": "현재가",
+            "take_profit_price": "익절가",
+            "momentum": "모멘텀",
+            "score": "점수",
+            "market_cap": "시총",
+        }
+    elif source == "lgbm":
+        # lgbm: rank, ticker, name, score, score_percentile, market_cap, value_traded_20d, vol_20d, risk_flags
+        display_cols = ["rank", "ticker", "name", "score", "score_percentile", "market_cap", "vol_20d", "risk_flags"]
+        col_names = {
+            "rank": "순위",
+            "ticker": "코드",
+            "name": "종목명",
+            "score": "점수",
+            "score_percentile": "백분위",
+            "market_cap": "시총",
+            "vol_20d": "변동성",
+            "risk_flags": "리스크",
+        }
+    else:
+        # Fallback: use all columns from DataFrame
+        display_cols = list(df.columns)
+        col_names = {c: c for c in display_cols}
+
+    available_cols = [c for c in display_cols if c in df.columns]
+
+    if not available_cols:
+        # Fallback: show all columns
+        available_cols = list(df.columns)
+        col_names = {c: c for c in available_cols}
+
+    # Start table
+    html_parts.append("<table>")
+    html_parts.append("<thead><tr>")
+    html_parts.append("<th>#</th>")  # Rank column
+
+    for col in available_cols:
+        header = col_names.get(col, col)
+        html_parts.append(f"<th>{header}</th>")
+
+    html_parts.append("</tr></thead>")
+    html_parts.append("<tbody>")
+
+    # Determine which column contains the stock code
+    code_col = None
+    for col in ["티커", "ticker", "code"]:
+        if col in df.columns:
+            code_col = col
+            break
+
+    num_cols = len(available_cols) + 1  # +1 for rank column
+
+    for idx, (_, row) in enumerate(df.head(30).iterrows(), 1):
+        html_parts.append("<tr>")
+        # Rank
+        rank_class = f"rank-{idx}" if idx <= 3 else ""
+        html_parts.append(f'<td><span class="rank {rank_class}">{idx}</span></td>')
+
+        for col in available_cols:
+            value = row.get(col, "")
+            formatted = _format_source_value(value, col)
+            html_parts.append(f"<td>{formatted}</td>")
+        html_parts.append("</tr>")
+
+        # Add summary row for top 10 stocks if summaries are provided
+        if idx <= 10 and summaries and code_col:
+            stock_code = str(row.get(code_col, "")).split(".")[0].zfill(6)
+            summary = summaries.get(stock_code)
+            if summary:
+                html_parts.append(f'<tr class="summary-row">')
+                html_parts.append(f'<td colspan="{num_cols}" class="summary-cell">')
+
+                # Summary text
+                html_parts.append(f'<div class="summary-text"><span class="icon">&#128240;</span>{summary.summary}</div>')
+
+                # Keywords
+                if summary.keywords:
+                    html_parts.append('<div class="keywords">')
+                    for kw in summary.keywords:
+                        html_parts.append(f'<span class="keyword-tag">#{kw}</span>')
+                    html_parts.append('</div>')
+
+                # Target prices
+                if summary.target_prices:
+                    html_parts.append('<div class="target-prices"><span class="icon">&#127919;</span>')
+                    for tp in summary.target_prices[:3]:
+                        html_parts.append(f'<span class="target-price-item">{tp["broker"]}: {tp["price"]:,}원</span>')
+                    html_parts.append('</div>')
+
+                html_parts.append('</td>')
+                html_parts.append('</tr>')
+
+    html_parts.append("</tbody></table>")
+
+    return "\n".join(html_parts)
+
+
+def _format_source_value(value, col_name: str) -> str:
+    """Format value for source table display."""
+    if pd.isna(value) or value == "" or value == "nan":
+        return "-"
+
+    value_str = str(value)
+
+    # Rank column
+    if col_name == "rank":
+        try:
+            rank_val = int(float(value))
+            rank_class = f"rank-{rank_val}" if rank_val <= 3 else ""
+            return f'<span class="rank {rank_class}">{rank_val}</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # Code/Ticker columns
+    if col_name in ["티커", "code", "ticker"]:
+        # Remove .KS, .KQ suffix for cleaner display
+        clean_code = value_str.split(".")[0]
+        return f'<span class="code">{clean_code}</span>'
+
+    # Name columns
+    if col_name in ["종목명", "name"]:
+        return f'<span class="name">{value_str}</span>'
+
+    # Market column
+    if col_name == "market":
+        return f'<span class="market">{value_str}</span>'
+
+    # Price columns (현재가, 신호가, 돌파가, 손절가, 익절가, current_price, take_profit_price)
+    if col_name in ["현재가", "신호가", "돌파가", "손절가", "익절가", "close", "current_price", "take_profit_price", "stop_loss_price"]:
+        try:
+            price = float(value)
+            return f'<span class="number">{int(price):,}</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # Percentage/Momentum columns
+    if col_name in ["모멘텀(%)", "VAM", "등락률"]:
+        try:
+            pct = float(value_str.replace("%", "").replace(",", ""))
+            css_class = "positive" if pct > 0 else "negative" if pct < 0 else ""
+            sign = "+" if pct > 0 else ""
+            return f'<span class="number {css_class}">{sign}{pct:.1f}%</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # XGBoost momentum (raw value, no %)
+    if col_name == "momentum":
+        try:
+            val = float(value)
+            css_class = "positive" if val > 0 else "negative" if val < 0 else ""
+            return f'<span class="number {css_class}">{val:.1f}</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # Score column
+    if col_name == "score":
+        try:
+            val = float(value)
+            return f'<span class="number positive">{val:.4f}</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # Market cap column (시총(억) or market_cap)
+    if col_name in ["시총(억)"]:
+        try:
+            cap = float(value_str.replace(",", ""))
+            return f'<span class="number">{int(cap):,}</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # 이격도 column (disparity percentage)
+    if col_name == "이격도":
+        try:
+            val = float(value_str.replace("%", "").replace(",", ""))
+            return f'<span class="number">{val:.1f}%</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # Market cap in raw value (xgboost uses raw KRW)
+    if col_name == "market_cap":
+        try:
+            cap = float(value)
+            # Convert to 억원
+            cap_억 = cap / 100_000_000
+            return f'<span class="number">{int(cap_억):,}억</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # Date columns
+    if col_name in ["신호일", "매도예정", "돌파일"]:
+        return f'<span class="date">{value_str}</span>'
+
+    # Pattern columns
+    if col_name in ["패턴", "사유"]:
+        return f'<span class="pattern">{value_str}</span>'
+
+    # LGBM score_percentile column
+    if col_name == "score_percentile":
+        try:
+            val = float(value)
+            return f'<span class="number">{val:.1f}%</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # LGBM vol_20d column (volatility)
+    if col_name == "vol_20d":
+        try:
+            val = float(value) * 100  # Convert to percentage
+            css_class = "negative" if val > 5 else ""
+            return f'<span class="number {css_class}">{val:.2f}%</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # LGBM risk_flags column
+    if col_name == "risk_flags":
+        try:
+            # Parse risk flags from string like "['high_vol', 'low_volume']"
+            flags_str = str(value).replace("[", "").replace("]", "").replace("'", "").replace('"', "")
+            if not flags_str or flags_str == "":
+                return '<span class="number">-</span>'
+            flags = [f.strip() for f in flags_str.split(",") if f.strip()]
+            if not flags:
+                return '<span class="number">-</span>'
+            html_flags = []
+            for flag in flags:
+                css_class = f"risk-{flag.replace(' ', '_')}"
+                html_flags.append(f'<span class="risk-flag {css_class}">{flag}</span>')
+            return " ".join(html_flags)
+        except Exception:
+            return value_str
+
+    # Default: return as-is
+    return value_str
+
+
+def _macro_df_to_html_table(df: pd.DataFrame) -> str:
+    """Convert macro (ETF) DataFrame to HTML table.
+
+    Args:
+        df: Macro DataFrame from etfking
+
+    Returns:
+        HTML table string
+    """
+    if df is None or df.empty:
+        return '<p style="color: #888; padding: 20px;">No macro data available</p>'
+
+    # Expected columns: date, rank, change, category, momentum_score, volatility_score, composite_score
+    display_cols = ["rank", "change", "category", "momentum_score", "volatility_score", "composite_score"]
+    available_cols = [c for c in display_cols if c in df.columns]
+
+    col_names = {
+        "rank": "순위",
+        "change": "변동",
+        "category": "섹터/카테고리",
+        "momentum_score": "모멘텀",
+        "volatility_score": "변동성",
+        "composite_score": "종합점수",
+    }
+
+    html_parts = ["<table>", "<thead><tr>"]
+
+    for col in available_cols:
+        header = col_names.get(col, col)
+        html_parts.append(f"<th>{header}</th>")
+
+    html_parts.append("</tr></thead>")
+    html_parts.append("<tbody>")
+
+    for _, row in df.iterrows():
+        html_parts.append("<tr>")
+        for col in available_cols:
+            value = row.get(col, "")
+
+            if col == "rank":
+                rank_val = int(value) if pd.notna(value) else 0
+                rank_class = f"rank-{rank_val}" if rank_val <= 3 else ""
+                formatted = f'<span class="rank {rank_class}">{rank_val}</span>'
+            elif col == "change":
+                change_str = str(value)
+                if "▲" in change_str:
+                    formatted = f'<span class="change-up">{change_str}</span>'
+                elif "▼" in change_str:
+                    formatted = f'<span class="change-down">{change_str}</span>'
+                else:
+                    formatted = f'<span class="change-same">{change_str}</span>'
+            elif col == "category":
+                formatted = f'<span class="category">{value}</span>'
+            elif col in ["momentum_score", "volatility_score"]:
+                try:
+                    val = float(value)
+                    formatted = f'<span class="number">{val:.2f}</span>'
+                except (ValueError, TypeError):
+                    formatted = str(value)
+            elif col == "composite_score":
+                try:
+                    val = float(value)
+                    css_class = "positive" if val > 0 else "negative" if val < 0 else ""
+                    sign = "+" if val > 0 else ""
+                    formatted = f'<span class="number {css_class}">{sign}{val:.2f}</span>'
+                except (ValueError, TypeError):
+                    formatted = str(value)
+            else:
+                formatted = str(value) if pd.notna(value) else "-"
+
+            html_parts.append(f"<td>{formatted}</td>")
+        html_parts.append("</tr>")
+
+    html_parts.append("</tbody></table>")
+
+    return "\n".join(html_parts)
+
+
 class HTMLGenerator:
     """HTML page generator for ensemble results."""
 
@@ -484,6 +1201,13 @@ class HTMLGenerator:
         as_of_date: date | None = None,
         top_n: int = 30,
         result_csv: str | None = None,
+        source_csvs: dict[str, Path] | None = None,
+        macro_csv: Path | None = None,
+        korea_macro_csv: Path | None = None,
+        xgboost_csv: Path | None = None,
+        lgbm_csv: Path | None = None,
+        fred_png: Path | None = None,
+        stock_summaries: dict[str, dict] | None = None,
     ) -> dict[str, Path]:
         """Generate HTML pages.
 
@@ -492,6 +1216,13 @@ class HTMLGenerator:
             as_of_date: Date of results
             top_n: Number of top stocks
             result_csv: Filename of result CSV for download link
+            source_csvs: Dictionary of {source_name: csv_path}
+            macro_csv: Path to US ETF macro CSV file
+            korea_macro_csv: Path to Korea ETF macro CSV file
+            xgboost_csv: Path to XGBoost CSV file
+            lgbm_csv: Path to LGBM CSV file
+            fred_png: Path to FRED liquidity dashboard PNG file
+            stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
 
         Returns:
             Dictionary of generated file paths
@@ -504,21 +1235,87 @@ class HTMLGenerator:
         date_str = as_of_date.strftime("%Y-%m-%d")
         generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Default result CSV filename
-        if result_csv is None:
-            result_csv = f"top30_{as_of_date.strftime('%Y_%m_%d')}.csv"
+        # Generate source tables (chartking, real only)
+        source_tables = {"chartking": "", "real": ""}
+        if source_csvs:
+            for source, csv_path in source_csvs.items():
+                if source in source_tables and csv_path and csv_path.exists():
+                    try:
+                        # Extract comments from CSV
+                        comments = _extract_csv_comments(csv_path)
+                        source_df = pd.read_csv(csv_path, encoding="utf-8-sig", comment="#")
+                        # Get summaries for this source if available
+                        source_summ = stock_summaries.get(source, {}) if stock_summaries else None
+                        source_tables[source] = _source_df_to_html_table(source_df, source, comments, source_summ)
+                    except Exception as e:
+                        logger.warning(f"Failed to read {source} CSV: {e}")
+                        source_tables[source] = f'<p style="color: #888;">Error loading {source} data</p>'
+                elif source in source_tables:
+                    source_tables[source] = f'<p style="color: #888;">No {source} data available</p>'
+        else:
+            for source in source_tables:
+                source_tables[source] = f'<p style="color: #888;">No {source} data available</p>'
 
-        # Generate table HTML
-        top_n_table = _df_to_html_table(df.head(top_n))
+        # Generate US macro table
+        macro_table = '<p style="color: #888; padding: 20px;">No US ETF data available</p>'
+        if macro_csv and macro_csv.exists():
+            try:
+                macro_df = pd.read_csv(macro_csv, encoding="utf-8-sig")
+                macro_table = _macro_df_to_html_table(macro_df)
+            except Exception as e:
+                logger.warning(f"Failed to read US macro CSV: {e}")
+                macro_table = f'<p style="color: #888;">Error loading US ETF data: {e}</p>'
+
+        # Generate Korea macro table
+        korea_macro_table = '<p style="color: #888; padding: 20px;">No Korea ETF data available</p>'
+        if korea_macro_csv and korea_macro_csv.exists():
+            try:
+                korea_df = pd.read_csv(korea_macro_csv, encoding="utf-8-sig")
+                korea_macro_table = _macro_df_to_html_table(korea_df)
+            except Exception as e:
+                logger.warning(f"Failed to read Korea macro CSV: {e}")
+                korea_macro_table = f'<p style="color: #888;">Error loading Korea ETF data: {e}</p>'
+
+        # Generate XGBoost table
+        xgboost_table = '<p style="color: #888; padding: 20px;">No XGBoost data available</p>'
+        if xgboost_csv and xgboost_csv.exists():
+            try:
+                xgboost_df = pd.read_csv(xgboost_csv, encoding="utf-8-sig")
+                xgboost_summ = stock_summaries.get("xgboost", {}) if stock_summaries else None
+                xgboost_table = _source_df_to_html_table(xgboost_df, "xgboost", None, xgboost_summ)
+            except Exception as e:
+                logger.warning(f"Failed to read XGBoost CSV: {e}")
+                xgboost_table = f'<p style="color: #888;">Error loading XGBoost data: {e}</p>'
+
+        # Generate LGBM table
+        lgbm_table = '<p style="color: #888; padding: 20px;">No LGBM data available</p>'
+        if lgbm_csv and lgbm_csv.exists():
+            try:
+                lgbm_comments = _extract_csv_comments(lgbm_csv)
+                lgbm_df = pd.read_csv(lgbm_csv, encoding="utf-8-sig", comment="#")
+                lgbm_table = _source_df_to_html_table(lgbm_df, "lgbm", lgbm_comments)
+            except Exception as e:
+                logger.warning(f"Failed to read LGBM CSV: {e}")
+                lgbm_table = f'<p style="color: #888;">Error loading LGBM data: {e}</p>'
+
+        # Generate FRED image HTML
+        fred_image = '<p style="color: #888; padding: 20px;">No FRED liquidity dashboard available</p>'
+        if fred_png and fred_png.exists():
+            # Image will be copied to docs/images/fred_liquidity_dashboard.png
+            fred_image = '<img src="images/fred_liquidity_dashboard.png" alt="FRED Liquidity Dashboard" />'
 
         # Generate main page
         html_content = HTML_TEMPLATE.format(
             date_str=date_str,
             generated_at=generated_at,
-            top_n=top_n,
-            top_n_table=top_n_table,
             github_repo=self.github_repo,
-            result_csv=result_csv,
+            chartking_table=source_tables["chartking"],
+            real_table=source_tables["real"],
+            xgboost_table=xgboost_table,
+            lgbm_table=lgbm_table,
+            macro_table=macro_table,
+            korea_macro_table=korea_macro_table,
+            fred_image=fred_image,
         )
 
         # Save index.html
@@ -575,6 +1372,13 @@ def generate_html_pages(
     pages_dir: Path | str | None = None,
     github_repo: str = "avantchoi82/chronosbolt-moirai-ttm",
     result_csv: str | None = None,
+    source_csvs: dict[str, Path] | None = None,
+    macro_csv: Path | None = None,
+    korea_macro_csv: Path | None = None,
+    xgboost_csv: Path | None = None,
+    lgbm_csv: Path | None = None,
+    fred_png: Path | None = None,
+    stock_summaries: dict[str, dict] | None = None,
 ) -> dict[str, Path]:
     """Generate HTML pages (convenience function).
 
@@ -585,9 +1389,16 @@ def generate_html_pages(
         pages_dir: Output directory
         result_csv: Filename of result CSV for download link
         github_repo: GitHub repository name
+        source_csvs: Dictionary of {source_name: csv_path}
+        macro_csv: Path to US ETF macro CSV file
+        korea_macro_csv: Path to Korea ETF macro CSV file
+        xgboost_csv: Path to XGBoost CSV file
+        lgbm_csv: Path to LGBM CSV file
+        fred_png: Path to FRED liquidity dashboard PNG file
+        stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
 
     Returns:
         Dictionary of generated file paths
     """
     generator = HTMLGenerator(pages_dir, github_repo)
-    return generator.generate(df, as_of_date, top_n, result_csv)
+    return generator.generate(df, as_of_date, top_n, result_csv, source_csvs, macro_csv, korea_macro_csv, xgboost_csv, lgbm_csv, fred_png, stock_summaries)
