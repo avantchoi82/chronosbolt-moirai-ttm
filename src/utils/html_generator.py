@@ -431,7 +431,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <div class="tab-content active" id="tab-stocks">
                 <header>
                     <h1>Stock Scanner Source Data</h1>
-                    <div class="subtitle">ChartKing + Real ATR + 단순모멘텀 | Latest Picks</div>
+                    <div class="subtitle">KOSPI &#49884;&#51109; + Real CAP/ATR + &#45800;&#49692;&#47784;&#47704;&#53568; + ChartKing | Latest Picks</div>
                     <div class="meta">
                         <span>Date: <strong>{date_str}</strong></span>
                         <span>|</span>
@@ -440,9 +440,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </header>
 
                 <div class="section">
-                    <h2 class="section-title">&#128200; ChartKing (Best)</h2>
+                    <h2 class="section-title">&#128200; KOSPI &#49884;&#51109; &#49345;&#54889;</h2>
+                    <div class="table-wrapper" style="padding: 20px; font-family: monospace; white-space: pre-line; line-height: 1.6;">
+                        {kospidispart_content}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">&#128176; Real CAP (&#49884;&#44032;&#52509;&#50529; &#44592;&#51456;)</h2>
                     <div class="table-wrapper">
-                        {chartking_table}
+                        {real_cap_table}
                     </div>
                 </div>
 
@@ -457,6 +464,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                     <h2 class="section-title">&#128640; &#45800;&#49692;&#47784;&#47704;&#53568; &#44592;&#48152;</h2>
                     <div class="table-wrapper">
                         {xgboost_table}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">&#127775; ChartKing (Best)</h2>
+                    <div class="table-wrapper">
+                        {chartking_table}
                     </div>
                 </div>
 
@@ -1208,6 +1222,8 @@ class HTMLGenerator:
         lgbm_csv: Path | None = None,
         fred_png: Path | None = None,
         stock_summaries: dict[str, dict] | None = None,
+        kospidispart_txt: Path | None = None,
+        real_cap_csv: Path | None = None,
     ) -> dict[str, Path]:
         """Generate HTML pages.
 
@@ -1223,6 +1239,8 @@ class HTMLGenerator:
             lgbm_csv: Path to LGBM CSV file
             fred_png: Path to FRED liquidity dashboard PNG file
             stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
+            kospidispart_txt: Path to KOSPIDISPART txt file (KOSPI market status)
+            real_cap_csv: Path to Real CAP CSV file
 
         Returns:
             Dictionary of generated file paths
@@ -1234,6 +1252,28 @@ class HTMLGenerator:
 
         date_str = as_of_date.strftime("%Y-%m-%d")
         generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Generate KOSPIDISPART content (KOSPI market status)
+        kospidispart_content = '<p style="color: #888;">No KOSPI market status available</p>'
+        if kospidispart_txt and kospidispart_txt.exists():
+            try:
+                content = kospidispart_txt.read_text(encoding="utf-8")
+                # Format the content for HTML display
+                kospidispart_content = content.replace("\n", "<br>")
+            except Exception as e:
+                logger.warning(f"Failed to read KOSPIDISPART txt: {e}")
+                kospidispart_content = f'<p style="color: #888;">Error loading KOSPI market status: {e}</p>'
+
+        # Generate Real CAP table
+        real_cap_table = '<p style="color: #888; padding: 20px;">No Real CAP data available</p>'
+        if real_cap_csv and real_cap_csv.exists():
+            try:
+                comments = _extract_csv_comments(real_cap_csv)
+                real_cap_df = pd.read_csv(real_cap_csv, encoding="utf-8-sig", comment="#")
+                real_cap_table = _source_df_to_html_table(real_cap_df, "real", comments, None)
+            except Exception as e:
+                logger.warning(f"Failed to read Real CAP CSV: {e}")
+                real_cap_table = f'<p style="color: #888;">Error loading Real CAP data: {e}</p>'
 
         # Generate source tables (chartking, real only)
         source_tables = {"chartking": "", "real": ""}
@@ -1309,6 +1349,8 @@ class HTMLGenerator:
             date_str=date_str,
             generated_at=generated_at,
             github_repo=self.github_repo,
+            kospidispart_content=kospidispart_content,
+            real_cap_table=real_cap_table,
             chartking_table=source_tables["chartking"],
             real_table=source_tables["real"],
             xgboost_table=xgboost_table,
@@ -1379,6 +1421,8 @@ def generate_html_pages(
     lgbm_csv: Path | None = None,
     fred_png: Path | None = None,
     stock_summaries: dict[str, dict] | None = None,
+    kospidispart_txt: Path | None = None,
+    real_cap_csv: Path | None = None,
 ) -> dict[str, Path]:
     """Generate HTML pages (convenience function).
 
@@ -1396,9 +1440,14 @@ def generate_html_pages(
         lgbm_csv: Path to LGBM CSV file
         fred_png: Path to FRED liquidity dashboard PNG file
         stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
+        kospidispart_txt: Path to KOSPIDISPART txt file (KOSPI market status)
+        real_cap_csv: Path to Real CAP CSV file
 
     Returns:
         Dictionary of generated file paths
     """
     generator = HTMLGenerator(pages_dir, github_repo)
-    return generator.generate(df, as_of_date, top_n, result_csv, source_csvs, macro_csv, korea_macro_csv, xgboost_csv, lgbm_csv, fred_png, stock_summaries)
+    return generator.generate(
+        df, as_of_date, top_n, result_csv, source_csvs, macro_csv, korea_macro_csv,
+        xgboost_csv, lgbm_csv, fred_png, stock_summaries, kospidispart_txt, real_cap_csv
+    )
