@@ -431,7 +431,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <div class="tab-content active" id="tab-stocks">
                 <header>
                     <h1>Stock Scanner Source Data</h1>
-                    <div class="subtitle">Real + ChartKing + 단순모멘텀 | Latest Picks</div>
+                    <div class="subtitle">ChartKing + Real ATR + 단순모멘텀 | Latest Picks</div>
                     <div class="meta">
                         <span>Date: <strong>{date_str}</strong></span>
                         <span>|</span>
@@ -440,16 +440,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </header>
 
                 <div class="section">
-                    <h2 class="section-title">&#128293; Real (&#49892;&#49884;&#44036; &#47784;&#47704;&#53568;)</h2>
+                    <h2 class="section-title">&#128200; ChartKing (Best)</h2>
                     <div class="table-wrapper">
-                        {real_table}
+                        {chartking_table}
                     </div>
                 </div>
 
                 <div class="section">
-                    <h2 class="section-title">&#128200; ChartKing (Best)</h2>
+                    <h2 class="section-title">&#128293; Real ATR (&#49892;&#49884;&#44036; &#47784;&#47704;&#53568;)</h2>
                     <div class="table-wrapper">
-                        {chartking_table}
+                        {real_table}
                     </div>
                 </div>
 
