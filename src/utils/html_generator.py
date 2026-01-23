@@ -322,6 +322,22 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             border-left-color: #00d4ff;
         }}
 
+        /* Minute tab specific styles */
+        .minute-header {{
+            background: linear-gradient(90deg, #f97316, #facc15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
+        .minute-section .section-title {{
+            color: #f97316;
+            border-left-color: #f97316;
+        }}
+        .minute-section th {{
+            background: rgba(249, 115, 22, 0.15);
+            color: #f97316;
+        }}
+
         /* ML tab specific styles */
         .ml-header {{
             background: linear-gradient(90deg, #a855f7, #06b6d4);
@@ -413,6 +429,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <span class="icon">&#128200;</span>
             <span>&#51333;&#47785;</span>
         </button>
+        <button class="nav-btn" onclick="showTab('minute')" id="btn-minute">
+            <span class="icon">&#128338;</span>
+            <span>&#48516;&#48393;</span>
+        </button>
         <button class="nav-btn" onclick="showTab('ml')" id="btn-ml">
             <span class="icon">&#129302;</span>
             <span>ML</span>
@@ -479,6 +499,35 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                     <div class="history-link" style="text-align: left; padding: 15px;">
                         <p style="margin-bottom: 10px; color: #888;">Source CSV Files:</p>
                         <a href="sources/" target="_blank">&#128193; Download Source CSVs</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MINUTE TAB -->
+            <div class="tab-content" id="tab-minute">
+                <header>
+                    <h1 class="minute-header">60&#48516;&#48393; &#49892;&#49884;&#44036; &#47784;&#47704;&#53568;</h1>
+                    <div class="subtitle">Real Minute | 60-Minute Candle Momentum Scanner</div>
+                    <div class="meta">
+                        <span>Date: <strong>{date_str}</strong></span>
+                        <span>|</span>
+                        <span>Generated: <strong>{generated_at}</strong></span>
+                    </div>
+                </header>
+
+                <div class="section minute-section">
+                    <h2 class="section-title">&#128338; 60&#48516;&#48393; &#49345;&#49849;&#54056;&#53556;</h2>
+                    <div class="table-wrapper">
+                        {minute60_table}
+                    </div>
+                </div>
+
+                <div class="section minute-section">
+                    <h2 class="section-title">&#128202; &#51648;&#54364; &#49444;&#47749;</h2>
+                    <div style="padding: 15px; color: #888;">
+                        <p><strong>VAM:</strong> Volume Adjusted Momentum (&#44144;&#47000;&#47049; &#51312;&#51221; &#47784;&#47704;&#53568;)</p>
+                        <p><strong>&#51060;&#44201;&#46020;:</strong> &#54788;&#51116;&#44032; &#45824;&#48708; &#51060;&#46041;&#54217;&#44512;&#49440; &#44340;&#47532;&#50984;</p>
+                        <p><strong>&#44592;&#50872;&#44592;:</strong> &#52628;&#49464;&#49440; &#44592;&#50872;&#44592; (&#50577;&#49688;: &#49345;&#49849;, &#51020;&#49688;: &#54616;&#46973;)</p>
                     </div>
                 </div>
             </div>
@@ -897,6 +946,21 @@ def _source_df_to_html_table(
             "vol_20d": "변동성",
             "risk_flags": "리스크",
         }
+    elif source == "minute60":
+        # minute60: 티커, 종목명, 현재가, 손절가, 익절가, VAM, 이격도, 기울기, 사유, 시총(억)
+        display_cols = ["티커", "종목명", "현재가", "손절가", "익절가", "VAM", "이격도", "기울기", "사유", "시총(억)"]
+        col_names = {
+            "티커": "코드",
+            "종목명": "종목명",
+            "현재가": "현재가",
+            "손절가": "손절가",
+            "익절가": "익절가",
+            "VAM": "VAM",
+            "이격도": "이격도",
+            "기울기": "기울기",
+            "사유": "패턴",
+            "시총(억)": "시총(억)",
+        }
     else:
         # Fallback: use all columns from DataFrame
         display_cols = list(df.columns)
@@ -1053,6 +1117,16 @@ def _format_source_value(value, col_name: str) -> str:
         try:
             val = float(value_str.replace("%", "").replace(",", ""))
             return f'<span class="number">{val:.1f}%</span>'
+        except (ValueError, TypeError):
+            return value_str
+
+    # 기울기 column (slope/trend)
+    if col_name == "기울기":
+        try:
+            val = float(value)
+            css_class = "positive" if val > 0 else "negative" if val < 0 else ""
+            sign = "+" if val > 0 else ""
+            return f'<span class="number {css_class}">{sign}{val:.2f}</span>'
         except (ValueError, TypeError):
             return value_str
 
@@ -1224,6 +1298,7 @@ class HTMLGenerator:
         stock_summaries: dict[str, dict] | None = None,
         kospidispart_txt: Path | None = None,
         real_cap_csv: Path | None = None,
+        minute60_csv: Path | None = None,
     ) -> dict[str, Path]:
         """Generate HTML pages.
 
@@ -1241,6 +1316,7 @@ class HTMLGenerator:
             stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
             kospidispart_txt: Path to KOSPIDISPART txt file (KOSPI market status)
             real_cap_csv: Path to Real CAP CSV file
+            minute60_csv: Path to 60-minute candle CSV file
 
         Returns:
             Dictionary of generated file paths
@@ -1338,6 +1414,16 @@ class HTMLGenerator:
                 logger.warning(f"Failed to read LGBM CSV: {e}")
                 lgbm_table = f'<p style="color: #888;">Error loading LGBM data: {e}</p>'
 
+        # Generate Minute60 table
+        minute60_table = '<p style="color: #888; padding: 20px;">No minute60 data available</p>'
+        if minute60_csv and minute60_csv.exists():
+            try:
+                minute60_df = pd.read_csv(minute60_csv, encoding="utf-8-sig")
+                minute60_table = _source_df_to_html_table(minute60_df, "minute60", None)
+            except Exception as e:
+                logger.warning(f"Failed to read Minute60 CSV: {e}")
+                minute60_table = f'<p style="color: #888;">Error loading minute60 data: {e}</p>'
+
         # Generate FRED image HTML
         fred_image = '<p style="color: #888; padding: 20px;">No FRED liquidity dashboard available</p>'
         if fred_png and fred_png.exists():
@@ -1358,6 +1444,7 @@ class HTMLGenerator:
             macro_table=macro_table,
             korea_macro_table=korea_macro_table,
             fred_image=fred_image,
+            minute60_table=minute60_table,
         )
 
         # Save index.html
@@ -1423,6 +1510,7 @@ def generate_html_pages(
     stock_summaries: dict[str, dict] | None = None,
     kospidispart_txt: Path | None = None,
     real_cap_csv: Path | None = None,
+    minute60_csv: Path | None = None,
 ) -> dict[str, Path]:
     """Generate HTML pages (convenience function).
 
@@ -1442,6 +1530,7 @@ def generate_html_pages(
         stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
         kospidispart_txt: Path to KOSPIDISPART txt file (KOSPI market status)
         real_cap_csv: Path to Real CAP CSV file
+        minute60_csv: Path to 60-minute candle CSV file
 
     Returns:
         Dictionary of generated file paths
@@ -1449,5 +1538,6 @@ def generate_html_pages(
     generator = HTMLGenerator(pages_dir, github_repo)
     return generator.generate(
         df, as_of_date, top_n, result_csv, source_csvs, macro_csv, korea_macro_csv,
-        xgboost_csv, lgbm_csv, fred_png, stock_summaries, kospidispart_txt, real_cap_csv
+        xgboost_csv, lgbm_csv, fred_png, stock_summaries, kospidispart_txt, real_cap_csv,
+        minute60_csv
     )

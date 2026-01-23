@@ -52,6 +52,9 @@ FRED_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\fred\outputs")
 # KOSPIDISPART source directory (KOSPI market status)
 KOSPIDISPART_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\kospidispart\results\daily_logs")
 
+# Real Minute source directory (60-minute candle data)
+REAL_MINUTE_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\real_minute\output")
+
 # Output directory
 DOCS_DIR = Path(__file__).parent / "docs"
 
@@ -101,6 +104,29 @@ def get_latest_real_cap_csv() -> Path | None:
         return latest
     else:
         logger.warning("  real (CAP): No CSV files found")
+        return None
+
+
+def get_latest_minute60_csv() -> Path | None:
+    """Get the latest minute60 CSV file (60-minute candle data).
+
+    Returns:
+        Path to latest file or None if not found
+    """
+    if not REAL_MINUTE_SOURCE_DIR.exists():
+        logger.warning(f"Real Minute source directory not found: {REAL_MINUTE_SOURCE_DIR}")
+        return None
+
+    # Find minute60_*.csv files
+    files = list(REAL_MINUTE_SOURCE_DIR.glob("minute60_*.csv"))
+
+    if files:
+        files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+        latest = files[0]
+        logger.info(f"  minute60: {latest.name}")
+        return latest
+    else:
+        logger.warning("  minute60: No CSV files found")
         return None
 
 
@@ -350,44 +376,48 @@ def run_git_update(
     today = date.today()
 
     # Step 1: Get KOSPIDISPART txt (KOSPI market status)
-    logger.info("\n[1/9] Finding latest KOSPIDISPART txt...")
+    logger.info("\n[1/10] Finding latest KOSPIDISPART txt...")
     kospidispart_txt = get_latest_kospidispart_txt()
 
     # Step 2: Get source CSVs (chartking, real ATR)
-    logger.info("\n[2/9] Finding latest source CSVs...")
+    logger.info("\n[2/10] Finding latest source CSVs...")
     source_csvs = get_latest_source_csvs()
 
     # Step 3: Get Real CAP CSV
-    logger.info("\n[3/9] Finding latest Real CAP CSV...")
+    logger.info("\n[3/10] Finding latest Real CAP CSV...")
     real_cap_csv = get_latest_real_cap_csv()
 
-    # Step 4: Get macro CSVs
-    logger.info("\n[4/9] Finding latest macro CSVs...")
+    # Step 4: Get Minute60 CSV (60-minute candle data)
+    logger.info("\n[4/10] Finding latest Minute60 CSV...")
+    minute60_csv = get_latest_minute60_csv()
+
+    # Step 5: Get macro CSVs
+    logger.info("\n[5/10] Finding latest macro CSVs...")
     macro_csv = get_latest_macro_csv()
     korea_macro_csv = get_latest_korea_macro_csv()
 
-    # Step 5: Get XGBoost CSV
-    logger.info("\n[5/9] Finding latest XGBoost CSV...")
+    # Step 6: Get XGBoost CSV
+    logger.info("\n[6/10] Finding latest XGBoost CSV...")
     xgboost_csv = get_latest_xgboost_csv()
 
-    # Step 6: Get LGBM CSV
-    logger.info("\n[6/9] Finding latest LGBM CSV...")
+    # Step 7: Get LGBM CSV
+    logger.info("\n[7/10] Finding latest LGBM CSV...")
     lgbm_csv = get_latest_lgbm_csv()
 
-    # Step 7: Get FRED PNG
-    logger.info("\n[7/9] Finding latest FRED PNG...")
+    # Step 8: Get FRED PNG
+    logger.info("\n[8/10] Finding latest FRED PNG...")
     fred_png = get_latest_fred_png()
 
-    # Step 8: Copy files to docs/
-    logger.info("\n[8/10] Copying files to docs/...")
+    # Step 9: Copy files to docs/
+    logger.info("\n[9/12] Copying files to docs/...")
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
     copied_files = copy_source_csvs_to_docs(DOCS_DIR)
     logger.info(f"Copied {len(copied_files)} files")
 
-    # Step 9: AI Analysis (news + summary) for top 10 stocks
+    # Step 10: AI Analysis (news + summary) for top 10 stocks
     stock_summaries = None
     if enable_ai:
-        logger.info("\n[9/10] Analyzing stocks with AI (top 10 per source)...")
+        logger.info("\n[10/12] Analyzing stocks with AI (top 10 per source)...")
         try:
             stock_summaries = analyze_all_sources(
                 source_csvs=source_csvs,
@@ -402,10 +432,10 @@ def run_git_update(
             logger.warning(f"AI analysis failed: {e}")
             stock_summaries = None
     else:
-        logger.info("\n[9/10] Skipping AI analysis (use --ai to enable)")
+        logger.info("\n[10/12] Skipping AI analysis (use --ai to enable)")
 
-    # Step 10: Generate HTML pages
-    logger.info("\n[10/10] Generating HTML pages...")
+    # Step 11: Generate HTML pages
+    logger.info("\n[11/12] Generating HTML pages...")
     html_outputs = generate_html_pages(
         df=pd.DataFrame(),  # Empty DataFrame - no ensemble results
         as_of_date=today,
@@ -422,12 +452,13 @@ def run_git_update(
         stock_summaries=stock_summaries,
         kospidispart_txt=kospidispart_txt,
         real_cap_csv=real_cap_csv,
+        minute60_csv=minute60_csv,
     )
     logger.info(f"HTML generated: {list(html_outputs.keys())}")
 
-    # Step 11: Push to GitHub if requested
+    # Step 12: Push to GitHub if requested
     if push:
-        logger.info("\n[11/11] Pushing to GitHub Pages...")
+        logger.info("\n[12/12] Pushing to GitHub Pages...")
         success = publish_to_github_pages(
             as_of_date=today,
             push=True,
@@ -438,7 +469,7 @@ def run_git_update(
         else:
             logger.warning("GitHub Pages deployment failed")
     else:
-        logger.info("\n[11/11] Skipping push (use --push to enable)")
+        logger.info("\n[12/12] Skipping push (use --push to enable)")
 
     logger.info("\n" + "=" * 60)
     logger.info("Git update complete!")
