@@ -451,7 +451,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <div class="tab-content active" id="tab-stocks">
                 <header>
                     <h1>Stock Scanner Source Data</h1>
-                    <div class="subtitle">KOSPI &#49884;&#51109; + Real CAP/ATR + &#45800;&#49692;&#47784;&#47704;&#53568; + ChartKing | Latest Picks</div>
+                    <div class="subtitle">KOSPI &#49884;&#51109; + ChartKing + Real CAP + &#45800;&#49692;&#47784;&#47704;&#53568; | Top 20 Picks</div>
                     <div class="meta">
                         <span>Date: <strong>{date_str}</strong></span>
                         <span>|</span>
@@ -467,6 +467,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </div>
 
                 <div class="section">
+                    <h2 class="section-title">&#127775; ChartKing (Best)</h2>
+                    <div class="table-wrapper">
+                        {chartking_table}
+                    </div>
+                </div>
+
+                <div class="section">
                     <h2 class="section-title">&#128176; Real CAP (&#49884;&#44032;&#52509;&#50529; &#44592;&#51456;)</h2>
                     <div class="table-wrapper">
                         {real_cap_table}
@@ -474,23 +481,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </div>
 
                 <div class="section">
-                    <h2 class="section-title">&#128293; Real ATR (&#49892;&#49884;&#44036; &#47784;&#47704;&#53568;)</h2>
-                    <div class="table-wrapper">
-                        {real_table}
-                    </div>
-                </div>
-
-                <div class="section">
                     <h2 class="section-title">&#128640; &#45800;&#49692;&#47784;&#47704;&#53568; &#44592;&#48152;</h2>
                     <div class="table-wrapper">
                         {xgboost_table}
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2 class="section-title">&#127775; ChartKing (Best)</h2>
-                    <div class="table-wrapper">
-                        {chartking_table}
                     </div>
                 </div>
 
@@ -994,7 +987,7 @@ def _source_df_to_html_table(
 
     num_cols = len(available_cols) + 1  # +1 for rank column
 
-    for idx, (_, row) in enumerate(df.head(30).iterrows(), 1):
+    for idx, (_, row) in enumerate(df.head(20).iterrows(), 1):
         html_parts.append("<tr>")
         # Rank
         rank_class = f"rank-{idx}" if idx <= 3 else ""
@@ -1351,8 +1344,8 @@ class HTMLGenerator:
                 logger.warning(f"Failed to read Real CAP CSV: {e}")
                 real_cap_table = f'<p style="color: #888;">Error loading Real CAP data: {e}</p>'
 
-        # Generate source tables (chartking, real only)
-        source_tables = {"chartking": "", "real": ""}
+        # Generate source tables (chartking only)
+        source_tables = {"chartking": ""}
         if source_csvs:
             for source, csv_path in source_csvs.items():
                 if source in source_tables and csv_path and csv_path.exists():
@@ -1438,7 +1431,6 @@ class HTMLGenerator:
             kospidispart_content=kospidispart_content,
             real_cap_table=real_cap_table,
             chartking_table=source_tables["chartking"],
-            real_table=source_tables["real"],
             xgboost_table=xgboost_table,
             lgbm_table=lgbm_table,
             macro_table=macro_table,

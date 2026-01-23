@@ -2,10 +2,11 @@
 
 Copies CSV files from linked projects and publishes to GitHub Pages.
   - chartking: output
-  - real: output
+  - real: output (CAP only)
   - xgboost: output
   - etfking: output (macro ETF data)
   - fred: outputs (liquidity dashboard PNG)
+  - real_minute: output (60-minute candle)
 
 Usage:
   python main.py          # Generate HTML only
@@ -34,8 +35,10 @@ logger = logging.getLogger("git_updater")
 # Source directories configuration
 SOURCE_DIRS = {
     "chartking": Path(r"C:\Users\user\PycharmProjects\chartking\output"),
-    "real": Path(r"C:\Users\user\PycharmProjects\real\output"),
 }
+
+# Real source directory (for CAP only, ATR excluded)
+REAL_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\real\output")
 
 # Macro (ETF) source directory
 MACRO_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\etfking\output")
@@ -89,13 +92,12 @@ def get_latest_real_cap_csv() -> Path | None:
     Returns:
         Path to latest file or None if not found
     """
-    real_dir = SOURCE_DIRS.get("real")
-    if not real_dir or not real_dir.exists():
-        logger.warning(f"Real source directory not found")
+    if not REAL_SOURCE_DIR.exists():
+        logger.warning(f"Real source directory not found: {REAL_SOURCE_DIR}")
         return None
 
     # Find top30_cap CSV files
-    files = list(real_dir.glob("top30_cap_*.csv"))
+    files = list(REAL_SOURCE_DIR.glob("top30_cap_*.csv"))
 
     if files:
         files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
@@ -141,7 +143,6 @@ def get_latest_source_csvs() -> dict[str, Path | None]:
     # Define glob patterns per source
     glob_patterns = {
         "chartking": "top30*.csv",
-        "real": "top30_atr_*.csv",
     }
 
     for source, directory in SOURCE_DIRS.items():
