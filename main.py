@@ -309,35 +309,8 @@ def get_kofia_png() -> Path | None:
         return None
 
 
-def _copy_if_newer(src: Path, dest: Path) -> bool:
-    """Copy file only if source is newer than destination.
-
-    Args:
-        src: Source file path
-        dest: Destination file path
-
-    Returns:
-        True if file was copied, False if skipped
-    """
-    if not dest.exists():
-        shutil.copy2(src, dest)
-        return True
-
-    # Compare modification times
-    src_mtime = src.stat().st_mtime
-    dest_mtime = dest.stat().st_mtime
-
-    if src_mtime > dest_mtime:
-        shutil.copy2(src, dest)
-        return True
-
-    return False
-
-
 def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
     """Copy latest source CSVs to docs/sources/ directory.
-
-    Only copies files if source is newer than destination.
 
     Args:
         docs_dir: Documentation directory (docs/)
@@ -355,55 +328,45 @@ def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
         if filepath and filepath.exists():
             dest_name = f"{source}_{filepath.name}"
             dest_path = sources_dir / dest_name
-            if _copy_if_newer(filepath, dest_path):
-                copied.append(dest_path)
-                logger.info(f"  Copied: {dest_name}")
-            else:
-                logger.info(f"  Skipped (unchanged): {dest_name}")
+            shutil.copy2(filepath, dest_path)
+            copied.append(dest_path)
+            logger.info(f"  Copied: {dest_name}")
 
     # Copy macro (US ETF) CSV
     macro_csv = get_latest_macro_csv()
     if macro_csv and macro_csv.exists():
         dest_name = f"etfking_{macro_csv.name}"
         dest_path = sources_dir / dest_name
-        if _copy_if_newer(macro_csv, dest_path):
-            copied.append(dest_path)
-            logger.info(f"  Copied: {dest_name}")
-        else:
-            logger.info(f"  Skipped (unchanged): {dest_name}")
+        shutil.copy2(macro_csv, dest_path)
+        copied.append(dest_path)
+        logger.info(f"  Copied: {dest_name}")
 
     # Copy Korea ETF sector CSV
     korea_csv = get_latest_korea_macro_csv()
     if korea_csv and korea_csv.exists():
         dest_name = f"etfking_{korea_csv.name}"
         dest_path = sources_dir / dest_name
-        if _copy_if_newer(korea_csv, dest_path):
-            copied.append(dest_path)
-            logger.info(f"  Copied: {dest_name}")
-        else:
-            logger.info(f"  Skipped (unchanged): {dest_name}")
+        shutil.copy2(korea_csv, dest_path)
+        copied.append(dest_path)
+        logger.info(f"  Copied: {dest_name}")
 
     # Copy XGBoost CSV
     xgboost_csv = get_latest_xgboost_csv()
     if xgboost_csv and xgboost_csv.exists():
         dest_name = f"xgboost_{xgboost_csv.name}"
         dest_path = sources_dir / dest_name
-        if _copy_if_newer(xgboost_csv, dest_path):
-            copied.append(dest_path)
-            logger.info(f"  Copied: {dest_name}")
-        else:
-            logger.info(f"  Skipped (unchanged): {dest_name}")
+        shutil.copy2(xgboost_csv, dest_path)
+        copied.append(dest_path)
+        logger.info(f"  Copied: {dest_name}")
 
     # Copy LGBM CSV
     lgbm_csv = get_latest_lgbm_csv()
     if lgbm_csv and lgbm_csv.exists():
         dest_name = f"lgbm_{lgbm_csv.name}"
         dest_path = sources_dir / dest_name
-        if _copy_if_newer(lgbm_csv, dest_path):
-            copied.append(dest_path)
-            logger.info(f"  Copied: {dest_name}")
-        else:
-            logger.info(f"  Skipped (unchanged): {dest_name}")
+        shutil.copy2(lgbm_csv, dest_path)
+        copied.append(dest_path)
+        logger.info(f"  Copied: {dest_name}")
 
     # Copy FRED PNG to docs/images/
     images_dir = docs_dir / "images"
@@ -412,22 +375,18 @@ def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
     if fred_png and fred_png.exists():
         dest_name = "fred_liquidity_dashboard.png"
         dest_path = images_dir / dest_name
-        if _copy_if_newer(fred_png, dest_path):
-            copied.append(dest_path)
-            logger.info(f"  Copied: {dest_name}")
-        else:
-            logger.info(f"  Skipped (unchanged): {dest_name}")
+        shutil.copy2(fred_png, dest_path)
+        copied.append(dest_path)
+        logger.info(f"  Copied: {dest_name}")
 
     # Copy KOFIA PNG to docs/images/
     kofia_png = get_kofia_png()
     if kofia_png and kofia_png.exists():
         dest_name = "kofia_credit_ratio.png"
         dest_path = images_dir / dest_name
-        if _copy_if_newer(kofia_png, dest_path):
-            copied.append(dest_path)
-            logger.info(f"  Copied: {dest_name}")
-        else:
-            logger.info(f"  Skipped (unchanged): {dest_name}")
+        shutil.copy2(kofia_png, dest_path)
+        copied.append(dest_path)
+        logger.info(f"  Copied: {dest_name}")
 
     return copied
 
