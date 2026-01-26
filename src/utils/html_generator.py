@@ -558,6 +558,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </header>
 
                 <div class="section macro-section">
+                    <h2 class="section-title">&#128200; &#51613;&#49884;&#51088;&#44552; &#49888;&#50857;&#48708;&#50984; (KOFIA)</h2>
+                    <div class="fred-image-wrapper">
+                        {kofia_image}
+                    </div>
+                </div>
+
+                <div class="section macro-section">
                     <h2 class="section-title">&#127482;&#127480; US ETF Sector Rankings</h2>
                     <div class="table-wrapper">
                         {macro_table}
@@ -1423,6 +1430,11 @@ class HTMLGenerator:
             # Image will be copied to docs/images/fred_liquidity_dashboard.png
             fred_image = '<img src="images/fred_liquidity_dashboard.png" alt="FRED Liquidity Dashboard" />'
 
+        # Generate KOFIA image HTML (신용비율 그래프)
+        kofia_image = '<p style="color: #888; padding: 20px;">No KOFIA credit ratio chart available</p>'
+        # KOFIA image is copied during copy_source_csvs_to_docs()
+        kofia_image = '<img src="images/kofia_credit_ratio.png" alt="KOFIA Credit Ratio Chart" style="max-width: 100%; height: auto;" />'
+
         # Generate main page
         html_content = HTML_TEMPLATE.format(
             date_str=date_str,
@@ -1436,6 +1448,7 @@ class HTMLGenerator:
             macro_table=macro_table,
             korea_macro_table=korea_macro_table,
             fred_image=fred_image,
+            kofia_image=kofia_image,
             minute60_table=minute60_table,
         )
 

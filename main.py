@@ -58,6 +58,9 @@ KOSPIDISPART_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\kospidispart\resu
 # Real Minute source directory (60-minute candle data)
 REAL_MINUTE_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\real_minute\output")
 
+# KOFIA source directory (신용비율 그래프)
+KOFIA_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\kofia\downloads")
+
 # Output directory
 DOCS_DIR = Path(__file__).parent / "docs"
 
@@ -285,6 +288,27 @@ def get_latest_fred_png() -> Path | None:
         return None
 
 
+def get_kofia_png() -> Path | None:
+    """Get the KOFIA 신용비율 그래프 PNG file.
+
+    Returns:
+        Path to file or None if not found
+    """
+    if not KOFIA_SOURCE_DIR.exists():
+        logger.warning(f"KOFIA source directory not found: {KOFIA_SOURCE_DIR}")
+        return None
+
+    # Find the specific PNG file
+    png_path = KOFIA_SOURCE_DIR / "증시자금_신용비율_그래프.png"
+
+    if png_path.exists():
+        logger.info(f"  kofia: {png_path.name}")
+        return png_path
+    else:
+        logger.warning("  kofia: PNG file not found")
+        return None
+
+
 def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
     """Copy latest source CSVs to docs/sources/ directory.
 
@@ -352,6 +376,15 @@ def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
         dest_name = "fred_liquidity_dashboard.png"
         dest_path = images_dir / dest_name
         shutil.copy2(fred_png, dest_path)
+        copied.append(dest_path)
+        logger.info(f"  Copied: {dest_name}")
+
+    # Copy KOFIA PNG to docs/images/
+    kofia_png = get_kofia_png()
+    if kofia_png and kofia_png.exists():
+        dest_name = "kofia_credit_ratio.png"
+        dest_path = images_dir / dest_name
+        shutil.copy2(kofia_png, dest_path)
         copied.append(dest_path)
         logger.info(f"  Copied: {dest_name}")
 
