@@ -55,8 +55,6 @@ FRED_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\fred\outputs")
 # KOSPIDISPART source directory (KOSPI market status)
 KOSPIDISPART_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\kospidispart\results\daily_logs")
 
-# Real Minute source directory (60-minute candle data)
-REAL_MINUTE_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\real_minute\output")
 
 # KOFIA source directory (신용비율 그래프)
 KOFIA_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\kofia\downloads")
@@ -113,25 +111,26 @@ def get_latest_real_cap_csv() -> Path | None:
 
 
 def get_latest_minute60_csv() -> Path | None:
-    """Get the latest minute60 CSV file (60-minute candle data).
+    """Get the latest chartking x4 CSV file (60-minute candle data).
 
     Returns:
         Path to latest file or None if not found
     """
-    if not REAL_MINUTE_SOURCE_DIR.exists():
-        logger.warning(f"Real Minute source directory not found: {REAL_MINUTE_SOURCE_DIR}")
+    chartking_dir = SOURCE_DIRS.get("chartking")
+    if not chartking_dir or not chartking_dir.exists():
+        logger.warning(f"Chartking source directory not found")
         return None
 
-    # Find minute60_*.csv files
-    files = list(REAL_MINUTE_SOURCE_DIR.glob("minute60_*.csv"))
+    # Find top30_x4_*.csv files
+    files = list(chartking_dir.glob("top30_x4_*.csv"))
 
     if files:
         files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
         latest = files[0]
-        logger.info(f"  minute60: {latest.name}")
+        logger.info(f"  chartking x4: {latest.name}")
         return latest
     else:
-        logger.warning("  minute60: No CSV files found")
+        logger.warning("  chartking x4: No CSV files found")
         return None
 
 

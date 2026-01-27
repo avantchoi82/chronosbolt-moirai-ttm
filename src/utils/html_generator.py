@@ -947,19 +947,15 @@ def _source_df_to_html_table(
             "risk_flags": "리스크",
         }
     elif source == "minute60":
-        # minute60: 티커, 종목명, 현재가, 손절가, 익절가, VAM, 이격도, 기울기, 사유, 시총(억)
-        display_cols = ["티커", "종목명", "현재가", "손절가", "익절가", "VAM", "이격도", "기울기", "사유", "시총(억)"]
+        # chartking x4: ticker, name, price, momentum, signal_time, market
+        display_cols = ["ticker", "name", "price", "momentum", "signal_time", "market"]
         col_names = {
-            "티커": "코드",
-            "종목명": "종목명",
-            "현재가": "현재가",
-            "손절가": "손절가",
-            "익절가": "익절가",
-            "VAM": "VAM",
-            "이격도": "이격도",
-            "기울기": "기울기",
-            "사유": "패턴",
-            "시총(억)": "시총(억)",
+            "ticker": "코드",
+            "name": "종목명",
+            "price": "현재가",
+            "momentum": "모멘텀",
+            "signal_time": "시그널시간",
+            "market": "시장",
         }
     else:
         # Fallback: use all columns from DataFrame
