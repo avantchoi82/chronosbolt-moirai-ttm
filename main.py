@@ -59,6 +59,9 @@ KOSPIDISPART_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\kospidispart\resu
 # KOFIA source directory (신용비율 그래프)
 KOFIA_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\kofia\downloads")
 
+# AboutKosdaq source directory (코스닥 일봉 차트)
+ABOUTKOSDAQ_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\aboutkosdaq")
+
 # Output directory
 DOCS_DIR = Path(__file__).parent / "docs"
 
@@ -308,6 +311,26 @@ def get_kofia_png() -> Path | None:
         return None
 
 
+def get_aboutkosdaq_png() -> Path | None:
+    """Get the AboutKosdaq 코스닥 일봉 차트 PNG file.
+
+    Returns:
+        Path to file or None if not found
+    """
+    if not ABOUTKOSDAQ_SOURCE_DIR.exists():
+        logger.warning(f"AboutKosdaq source directory not found: {ABOUTKOSDAQ_SOURCE_DIR}")
+        return None
+
+    png_path = ABOUTKOSDAQ_SOURCE_DIR / "kosdaq_daily_chart.png"
+
+    if png_path.exists():
+        logger.info(f"  aboutkosdaq: {png_path.name}")
+        return png_path
+    else:
+        logger.warning("  aboutkosdaq: PNG file not found")
+        return None
+
+
 def _copy_if_newer(src: Path, dest: Path) -> bool:
     """Copy file only if source is newer than destination."""
     if not dest.exists():
@@ -395,6 +418,15 @@ def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
         dest_name = "kofia_credit_ratio.png"
         dest_path = images_dir / dest_name
         shutil.copy2(kofia_png, dest_path)
+        copied.append(dest_path)
+        logger.info(f"  Copied: {dest_name}")
+
+    # Copy AboutKosdaq PNG to docs/images/ (always copy - updates frequently)
+    aboutkosdaq_png = get_aboutkosdaq_png()
+    if aboutkosdaq_png and aboutkosdaq_png.exists():
+        dest_name = "kosdaq_daily_chart.png"
+        dest_path = images_dir / dest_name
+        shutil.copy2(aboutkosdaq_png, dest_path)
         copied.append(dest_path)
         logger.info(f"  Copied: {dest_name}")
 

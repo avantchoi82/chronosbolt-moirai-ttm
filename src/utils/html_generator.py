@@ -460,6 +460,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </header>
 
                 <div class="section">
+                    <h2 class="section-title">&#128202; KOSDAQ Daily Chart</h2>
+                    <div class="table-wrapper" style="padding: 20px; text-align: center;">
+                        {kosdaq_chart_image}
+                    </div>
+                </div>
+
+                <div class="section">
                     <h2 class="section-title">&#128200; KOSPI &#49884;&#51109; &#49345;&#54889;</h2>
                     <div class="table-wrapper" style="padding: 20px; font-family: monospace; white-space: pre-line; line-height: 1.6;">
                         {kospidispart_content}
@@ -1431,12 +1438,16 @@ class HTMLGenerator:
         # KOFIA image is copied during copy_source_csvs_to_docs()
         kofia_image = '<img src="images/kofia_credit_ratio.png" alt="KOFIA Credit Ratio Chart" style="max-width: 100%; height: auto;" />'
 
+        # Generate KOSDAQ daily chart image HTML
+        kosdaq_chart_image = '<img src="images/kosdaq_daily_chart.png" alt="KOSDAQ Daily Chart" style="max-width: 100%; height: auto;" />'
+
         # Generate main page
         html_content = HTML_TEMPLATE.format(
             date_str=date_str,
             generated_at=generated_at,
             github_repo=self.github_repo,
             kospidispart_content=kospidispart_content,
+            kosdaq_chart_image=kosdaq_chart_image,
             real_cap_table=real_cap_table,
             chartking_table=source_tables["chartking"],
             xgboost_table=xgboost_table,
