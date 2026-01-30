@@ -488,13 +488,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </div>
 
                 <div class="section">
-                    <h2 class="section-title">&#128640; &#45800;&#49692;&#47784;&#47704;&#53568; &#44592;&#48152;</h2>
-                    <div class="table-wrapper">
-                        {xgboost_table}
-                    </div>
-                </div>
-
-                <div class="section">
                     <h2 class="section-title">Download Data</h2>
                     <div class="history-link" style="text-align: left; padding: 15px;">
                         <p style="margin-bottom: 10px; color: #888;">Source CSV Files:</p>
@@ -926,20 +919,6 @@ def _source_df_to_html_table(
             "시총(억)": "시총(억)",
             "이격도": "이격도",
         }
-    elif source == "xgboost":
-        # xgboost: rank, ticker, name, market, current_price, stop_loss_price, take_profit_price, momentum, score, market_cap
-        display_cols = ["rank", "ticker", "name", "market", "current_price", "take_profit_price", "momentum", "score", "market_cap"]
-        col_names = {
-            "rank": "순위",
-            "ticker": "코드",
-            "name": "종목명",
-            "market": "시장",
-            "current_price": "현재가",
-            "take_profit_price": "익절가",
-            "momentum": "모멘텀",
-            "score": "점수",
-            "market_cap": "시총",
-        }
     elif source == "lgbm":
         # lgbm: rank, ticker, name, score, score_percentile, market_cap, value_traded_20d, vol_20d, risk_flags
         display_cols = ["rank", "ticker", "name", "score", "score_percentile", "market_cap", "vol_20d", "risk_flags"]
@@ -1299,7 +1278,6 @@ class HTMLGenerator:
         source_csvs: dict[str, Path] | None = None,
         macro_csv: Path | None = None,
         korea_macro_csv: Path | None = None,
-        xgboost_csv: Path | None = None,
         lgbm_csv: Path | None = None,
         fred_png: Path | None = None,
         stock_summaries: dict[str, dict] | None = None,
@@ -1317,7 +1295,6 @@ class HTMLGenerator:
             source_csvs: Dictionary of {source_name: csv_path}
             macro_csv: Path to US ETF macro CSV file
             korea_macro_csv: Path to Korea ETF macro CSV file
-            xgboost_csv: Path to XGBoost CSV file
             lgbm_csv: Path to LGBM CSV file
             fred_png: Path to FRED liquidity dashboard PNG file
             stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
@@ -1399,17 +1376,6 @@ class HTMLGenerator:
                 logger.warning(f"Failed to read Korea macro CSV: {e}")
                 korea_macro_table = f'<p style="color: #888;">Error loading Korea ETF data: {e}</p>'
 
-        # Generate XGBoost table
-        xgboost_table = '<p style="color: #888; padding: 20px;">No XGBoost data available</p>'
-        if xgboost_csv and xgboost_csv.exists():
-            try:
-                xgboost_df = pd.read_csv(xgboost_csv, encoding="utf-8-sig")
-                xgboost_summ = stock_summaries.get("xgboost", {}) if stock_summaries else None
-                xgboost_table = _source_df_to_html_table(xgboost_df, "xgboost", None, xgboost_summ)
-            except Exception as e:
-                logger.warning(f"Failed to read XGBoost CSV: {e}")
-                xgboost_table = f'<p style="color: #888;">Error loading XGBoost data: {e}</p>'
-
         # Generate LGBM table
         lgbm_table = '<p style="color: #888; padding: 20px;">No LGBM data available</p>'
         if lgbm_csv and lgbm_csv.exists():
@@ -1454,7 +1420,6 @@ class HTMLGenerator:
             kosdaq_chart_image=kosdaq_chart_image,
             real_cap_table=real_cap_table,
             chartking_table=source_tables["chartking"],
-            xgboost_table=xgboost_table,
             lgbm_table=lgbm_table,
             macro_table=macro_table,
             korea_macro_table=korea_macro_table,
@@ -1520,7 +1485,6 @@ def generate_html_pages(
     source_csvs: dict[str, Path] | None = None,
     macro_csv: Path | None = None,
     korea_macro_csv: Path | None = None,
-    xgboost_csv: Path | None = None,
     lgbm_csv: Path | None = None,
     fred_png: Path | None = None,
     stock_summaries: dict[str, dict] | None = None,
@@ -1540,7 +1504,6 @@ def generate_html_pages(
         source_csvs: Dictionary of {source_name: csv_path}
         macro_csv: Path to US ETF macro CSV file
         korea_macro_csv: Path to Korea ETF macro CSV file
-        xgboost_csv: Path to XGBoost CSV file
         lgbm_csv: Path to LGBM CSV file
         fred_png: Path to FRED liquidity dashboard PNG file
         stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
@@ -1554,6 +1517,6 @@ def generate_html_pages(
     generator = HTMLGenerator(pages_dir, github_repo)
     return generator.generate(
         df, as_of_date, top_n, result_csv, source_csvs, macro_csv, korea_macro_csv,
-        xgboost_csv, lgbm_csv, fred_png, stock_summaries, kospidispart_txt, real_cap_csv,
+        lgbm_csv, fred_png, stock_summaries, kospidispart_txt, real_cap_csv,
         minute60_csv
     )

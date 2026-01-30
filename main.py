@@ -3,7 +3,6 @@
 Copies CSV files from linked projects and publishes to GitHub Pages.
   - chartking: output
   - real: output (CAP only)
-  - xgboost: output
   - etfking: output (macro ETF data)
   - fred: outputs (liquidity dashboard PNG)
   - real_minute: output (60-minute candle)
@@ -42,9 +41,6 @@ REAL_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\real\output")
 
 # Macro (ETF) source directory
 MACRO_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\etfking\output")
-
-# XGBoost source directory
-XGBOOST_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\xgboost\output")
 
 # LGBM source directory
 LGBM_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\lgbm\output\top30")
@@ -223,29 +219,6 @@ def get_latest_korea_macro_csv() -> Path | None:
         return None
 
 
-def get_latest_xgboost_csv() -> Path | None:
-    """Get the latest XGBoost top20 CSV file.
-
-    Returns:
-        Path to latest file or None if not found
-    """
-    if not XGBOOST_SOURCE_DIR.exists():
-        logger.warning(f"XGBoost source directory not found: {XGBOOST_SOURCE_DIR}")
-        return None
-
-    # Find top20 CSV files
-    files = list(XGBOOST_SOURCE_DIR.glob("top20_*.csv"))
-
-    if files:
-        files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
-        latest = files[0]
-        logger.info(f"  xgboost: {latest.name}")
-        return latest
-    else:
-        logger.warning("  xgboost: No CSV files found")
-        return None
-
-
 def get_latest_lgbm_csv() -> Path | None:
     """Get the latest LGBM top30 CSV file.
 
@@ -385,15 +358,6 @@ def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
             copied.append(dest_path)
             logger.info(f"  Copied: {dest_name}")
 
-    # Copy XGBoost CSV
-    xgboost_csv = get_latest_xgboost_csv()
-    if xgboost_csv and xgboost_csv.exists():
-        dest_name = f"xgboost_{xgboost_csv.name}"
-        dest_path = sources_dir / dest_name
-        if _copy_if_newer(xgboost_csv, dest_path):
-            copied.append(dest_path)
-            logger.info(f"  Copied: {dest_name}")
-
     # Copy LGBM CSV
     lgbm_csv = get_latest_lgbm_csv()
     if lgbm_csv and lgbm_csv.exists():
@@ -474,20 +438,16 @@ def run_git_update(
     macro_csv = get_latest_macro_csv()
     korea_macro_csv = get_latest_korea_macro_csv()
 
-    # Step 6: Get XGBoost CSV
-    logger.info("\n[6/10] Finding latest XGBoost CSV...")
-    xgboost_csv = get_latest_xgboost_csv()
-
-    # Step 7: Get LGBM CSV
-    logger.info("\n[7/10] Finding latest LGBM CSV...")
+    # Step 6: Get LGBM CSV
+    logger.info("\n[6/9] Finding latest LGBM CSV...")
     lgbm_csv = get_latest_lgbm_csv()
 
     # Step 8: Get FRED PNG
-    logger.info("\n[8/10] Finding latest FRED PNG...")
+    logger.info("\n[7/9] Finding latest FRED PNG...")
     fred_png = get_latest_fred_png()
 
     # Step 9: Copy files to docs/
-    logger.info("\n[9/12] Copying files to docs/...")
+    logger.info("\n[8/11] Copying files to docs/...")
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
     copied_files = copy_source_csvs_to_docs(DOCS_DIR)
     logger.info(f"Copied {len(copied_files)} files")
@@ -495,11 +455,11 @@ def run_git_update(
     # Step 10: AI Analysis (news + summary) for top 10 stocks
     stock_summaries = None
     if enable_ai:
-        logger.info("\n[10/12] Analyzing stocks with AI (top 10 per source)...")
+        logger.info("\n[9/11] Analyzing stocks with AI (top 10 per source)...")
         try:
             stock_summaries = analyze_all_sources(
                 source_csvs=source_csvs,
-                xgboost_csv=xgboost_csv,
+                xgboost_csv=None,
                 lgbm_csv=None,  # Skip LGBM for now (separate ML tab)
                 top_n=10,
                 enable_ai=True,
@@ -510,10 +470,10 @@ def run_git_update(
             logger.warning(f"AI analysis failed: {e}")
             stock_summaries = None
     else:
-        logger.info("\n[10/12] Skipping AI analysis (use --ai to enable)")
+        logger.info("\n[9/11] Skipping AI analysis (use --ai to enable)")
 
     # Step 11: Generate HTML pages
-    logger.info("\n[11/12] Generating HTML pages...")
+    logger.info("\n[10/11] Generating HTML pages...")
     html_outputs = generate_html_pages(
         df=pd.DataFrame(),  # Empty DataFrame - no ensemble results
         as_of_date=today,
@@ -524,7 +484,6 @@ def run_git_update(
         source_csvs=source_csvs,
         macro_csv=macro_csv,
         korea_macro_csv=korea_macro_csv,
-        xgboost_csv=xgboost_csv,
         lgbm_csv=lgbm_csv,
         fred_png=fred_png,
         stock_summaries=stock_summaries,
@@ -536,7 +495,7 @@ def run_git_update(
 
     # Step 12: Push to GitHub if requested
     if push:
-        logger.info("\n[12/12] Pushing to GitHub Pages...")
+        logger.info("\n[11/11] Pushing to GitHub Pages...")
         success = publish_to_github_pages(
             as_of_date=today,
             push=True,
@@ -547,7 +506,7 @@ def run_git_update(
         else:
             logger.warning("GitHub Pages deployment failed")
     else:
-        logger.info("\n[12/12] Skipping push (use --push to enable)")
+        logger.info("\n[11/11] Skipping push (use --push to enable)")
 
     logger.info("\n" + "=" * 60)
     logger.info("Git update complete!")
