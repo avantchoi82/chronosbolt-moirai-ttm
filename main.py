@@ -396,6 +396,19 @@ def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
         copied.append(dest_path)
         logger.info(f"  Copied: {dest_name}")
 
+    # Copy AboutKosdaq backtest images to docs/images/ (always copy)
+    backtest_images = [
+        ("kosdaq_backtest_ma_standard.png", "kosdaq_backtest_ma_standard.png"),
+        ("kosdaq_backtest_ma_cross.png", "kosdaq_backtest_ma_cross.png"),
+    ]
+    for src_name, dest_name in backtest_images:
+        src_path = ABOUTKOSDAQ_SOURCE_DIR / src_name
+        if src_path.exists():
+            dest_path = images_dir / dest_name
+            shutil.copy2(src_path, dest_path)
+            copied.append(dest_path)
+            logger.info(f"  Copied: {dest_name}")
+
     return copied
 
 

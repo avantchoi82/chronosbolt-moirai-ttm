@@ -441,6 +441,10 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <span class="icon">&#127760;</span>
             <span>&#47588;&#53356;&#47196;</span>
         </button>
+        <button class="nav-btn" onclick="showTab('bubble')" id="btn-bubble">
+            <span class="icon">&#128201;</span>
+            <span>&#48260;&#48660;</span>
+        </button>
     </nav>
 
     <!-- Main Content -->
@@ -591,6 +595,33 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                         <p><strong>Momentum Score:</strong> &#51333;&#54633; &#47784;&#47704;&#53568; &#51648;&#54364; (&#45458;&#51012;&#49688;&#47197; &#44053;&#54620; &#49345;&#49849; &#52628;&#49464;)</p>
                         <p><strong>Volatility Score:</strong> &#48320;&#46041;&#49457; &#51648;&#54364; (&#45230;&#51012;&#49688;&#47197; &#50504;&#51221;&#51201;)</p>
                         <p><strong>Composite Score:</strong> &#51333;&#54633; &#51216;&#49688; (&#47784;&#47704;&#53568;/&#48320;&#46041;&#49457; &#44256;&#47140;)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUBBLE TAB -->
+            <div class="tab-content" id="tab-bubble">
+                <header>
+                    <h1 class="bubble-header">&#128201; KOSDAQ &#48260;&#48660; &#48177;&#53580;&#49828;&#53944;</h1>
+                    <div class="subtitle">MA Backtest Analysis | &#51060;&#54217;&#49440; &#44592;&#48152; &#48177;&#53580;&#49828;&#53944;</div>
+                    <div class="meta">
+                        <span>Date: <strong>{date_str}</strong></span>
+                        <span>|</span>
+                        <span>Generated: <strong>{generated_at}</strong></span>
+                    </div>
+                </header>
+
+                <div class="section">
+                    <h2 class="section-title">&#128202; &#44592;&#48376; &#51060;&#54217;&#49440; (10/20/50/100&#51068;)</h2>
+                    <div class="table-wrapper" style="padding: 20px; text-align: center;">
+                        {bubble_ma_standard_image}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">&#128200; &#44264;&#46304;/&#45936;&#46300;&#53356;&#47196;&#49828; MA (7&#51068;/25&#51068;)</h2>
+                    <div class="table-wrapper" style="padding: 20px; text-align: center;">
+                        {bubble_ma_cross_image}
                     </div>
                 </div>
             </div>
@@ -1411,6 +1442,10 @@ class HTMLGenerator:
         # Generate KOSDAQ daily chart image HTML
         kosdaq_chart_image = '<img src="images/kosdaq_daily_chart.png" alt="KOSDAQ Daily Chart" style="max-width: 100%; height: auto;" />'
 
+        # Generate bubble backtest images HTML
+        bubble_ma_standard_image = '<img src="images/kosdaq_backtest_ma_standard.png" alt="KOSDAQ Backtest MA Standard" style="max-width: 100%; height: auto;" />'
+        bubble_ma_cross_image = '<img src="images/kosdaq_backtest_ma_cross.png" alt="KOSDAQ Backtest MA Cross" style="max-width: 100%; height: auto;" />'
+
         # Generate main page
         html_content = HTML_TEMPLATE.format(
             date_str=date_str,
@@ -1426,6 +1461,8 @@ class HTMLGenerator:
             fred_image=fred_image,
             kofia_image=kofia_image,
             minute60_table=minute60_table,
+            bubble_ma_standard_image=bubble_ma_standard_image,
+            bubble_ma_cross_image=bubble_ma_cross_image,
         )
 
         # Save index.html
