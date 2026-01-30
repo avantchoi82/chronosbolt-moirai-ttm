@@ -400,6 +400,7 @@ def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
     backtest_images = [
         ("kosdaq_backtest_ma_standard.png", "kosdaq_backtest_ma_standard.png"),
         ("kosdaq_backtest_ma_cross.png", "kosdaq_backtest_ma_cross.png"),
+        ("kosdaq_weekly_surge_analysis.png", "kosdaq_weekly_surge_analysis.png"),
     ]
     for src_name, dest_name in backtest_images:
         src_path = ABOUTKOSDAQ_SOURCE_DIR / src_name

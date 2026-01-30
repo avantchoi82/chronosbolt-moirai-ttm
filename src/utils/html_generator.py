@@ -624,6 +624,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                         {bubble_ma_cross_image}
                     </div>
                 </div>
+
+                <div class="section">
+                    <h2 class="section-title">&#128640; &#51452;&#44036; &#44553;&#46321; &#48516;&#49437;</h2>
+                    <div class="table-wrapper" style="padding: 20px; text-align: center;">
+                        {bubble_weekly_surge_image}
+                    </div>
+                </div>
             </div>
 
             <footer>
@@ -1445,6 +1452,7 @@ class HTMLGenerator:
         # Generate bubble backtest images HTML
         bubble_ma_standard_image = '<img src="images/kosdaq_backtest_ma_standard.png" alt="KOSDAQ Backtest MA Standard" style="max-width: 100%; height: auto;" />'
         bubble_ma_cross_image = '<img src="images/kosdaq_backtest_ma_cross.png" alt="KOSDAQ Backtest MA Cross" style="max-width: 100%; height: auto;" />'
+        bubble_weekly_surge_image = '<img src="images/kosdaq_weekly_surge_analysis.png" alt="KOSDAQ Weekly Surge Analysis" style="max-width: 100%; height: auto;" />'
 
         # Generate main page
         html_content = HTML_TEMPLATE.format(
@@ -1463,6 +1471,7 @@ class HTMLGenerator:
             minute60_table=minute60_table,
             bubble_ma_standard_image=bubble_ma_standard_image,
             bubble_ma_cross_image=bubble_ma_cross_image,
+            bubble_weekly_surge_image=bubble_weekly_surge_image,
         )
 
         # Save index.html
