@@ -439,7 +439,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-04</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-04 14:08:16</strong></span>
+                        <span>Generated: <strong>2026-02-04 15:08:05</strong></span>
                     </div>
                 </header>
 
@@ -743,14 +743,30 @@
                     <h2 class="section-title">&#128176; Real CAP (&#49884;&#44032;&#52509;&#50529; &#44592;&#51456;)</h2>
                     <div class="table-wrapper">
                         <div class="csv-comments" style="padding: 10px 15px; margin-bottom: 10px; background: rgba(0, 212, 255, 0.1); border-radius: 8px; font-size: 0.85rem; color: #aaa;">
-<div>백테스트: max_return_regime_optimization | 최적화일: 2026-02-04</div>
-<div>IS  수익률: 400.56% | MDD: -44.9%</div>
-<div>OOS 수익률: 273.7% | MDD: -22.64%</div>
-<div>손절: 10.0% | 익절: 20.0% (R:R 1:2)</div>
-<div>이격도매수: 7.5% | 기울기매수: 0.6%</div>
-<div>이격도상한(20일): 35.0% | 이격도상한(100일): None%</div>
-<div>최대포지션: 3개</div>
-<div>스캔일시: 2026-02-04 13:21</div>
+<div>백테스트 기반 매매 전략 - 스캔일시: 2026-02-04 14:23</div>
+<div>[백테스트] max_return_regime_optimization | 최적화일: 2026-02-04</div>
+<div>[성과] IS: 320.8% (MDD -35.4%) | OOS: 278.6% (MDD -18.98%)</div>
+<div>[레짐] KOSPI 레짐 필터 적용 (하락장 매수 금지)</div>
+<div>--------------------------------------------------------------------------------</div>
+<div>[매수 OR 조건]</div>
+<div>1. 상승패턴 7종: W바닥, 역헤드앤숄더, 상승삼각형, 상승쐐기, 컵앤핸들, 삼중바닥, 상승채널</div>
+<div>2. 이격도+기울기: 20일선 이격도 7.5% 이내 AND 5일VWMA 기울기 0.6%+</div>
+<div>3. 골든크로스: 3일VWMA > 20일VWMA 상향돌파</div>
+<div>[매수 AND 필터]</div>
+<div>- 이격도상한: 20일 <= 55.0%</div>
+<div>- 시총: 2000억+ | 급등필터: 일일 30%+ 제외</div>
+<div>- KOSPI 레짐: 하락장(20일선<180일선) 매수 금지</div>
+<div>--------------------------------------------------------------------------------</div>
+<div>[매도 OR 조건]</div>
+<div>1. 하락패턴 7종: M천장, 헤드앤숄더, 하락삼각형, 하락쐐기 등</div>
+<div>2. 이격도과열: 20일선 >= 100.0%</div>
+<div>3. 기울기하락: 10일VWMA 기울기 < 0</div>
+<div>4. 데드크로스: 5일VWMA < 20일VWMA 하향돌파</div>
+<div>5. 손절: 진입가 대비 -10.0%</div>
+<div>6. Stale Exit: 20거래일 보유 후 +10% 미달 시 매도</div>
+<div>--------------------------------------------------------------------------------</div>
+<div>[체결] 익일 시가 매수/매도 | 최대포지션: 3종목</div>
+<div>[손익] 손절 -10.0% | 익절 +20.0% (R:R 1:2)</div>
 </div>
 <table>
 <thead><tr>
@@ -772,11 +788,11 @@
 <td><span class="rank rank-1">1</span></td>
 <td><span class="code">6730</span></td>
 <td><span class="name">서부T&D</span></td>
-<td><span class="number">18,620</span></td>
-<td><span class="number">18,770</span></td>
-<td><span class="number">16,758</span></td>
-<td><span class="number">22,344</span></td>
-<td><span class="number positive">+21.6%</span></td>
+<td><span class="number">18,550</span></td>
+<td><span class="number">18,540</span></td>
+<td><span class="number">16,695</span></td>
+<td><span class="number">22,260</span></td>
+<td><span class="number positive">+21.0%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
@@ -784,96 +800,110 @@
 </tr>
 <tr>
 <td><span class="rank rank-2">2</span></td>
+<td><span class="code">250</span></td>
+<td><span class="name">삼천당제약</span></td>
+<td><span class="number">528,000</span></td>
+<td><span class="number">536,000</span></td>
+<td><span class="number">475,200</span></td>
+<td><span class="number">633,600</span></td>
+<td><span class="number positive">+15.3%</span></td>
+<td><span class="date">02/04</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">133,004</span></td>
+</tr>
+<tr>
+<td><span class="rank rank-3">3</span></td>
 <td><span class="code">28670</span></td>
 <td><span class="name">팬오션</span></td>
-<td><span class="number">5,120</span></td>
-<td><span class="number">5,120</span></td>
-<td><span class="number">4,608</span></td>
-<td><span class="number">6,144</span></td>
-<td><span class="number positive">+15.3%</span></td>
+<td><span class="number">5,070</span></td>
+<td><span class="number">5,070</span></td>
+<td><span class="number">4,563</span></td>
+<td><span class="number">6,084</span></td>
+<td><span class="number positive">+15.0%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
 <td><span class="number">27,156</span></td>
 </tr>
 <tr>
-<td><span class="rank rank-3">3</span></td>
+<td><span class="rank ">4</span></td>
 <td><span class="code">272290</span></td>
 <td><span class="name">이녹스첨단소재</span></td>
-<td><span class="number">37,600</span></td>
-<td><span class="number">37,850</span></td>
-<td><span class="number">33,840</span></td>
-<td><span class="number">45,120</span></td>
-<td><span class="number positive">+14.6%</span></td>
+<td><span class="number">38,100</span></td>
+<td><span class="number">37,750</span></td>
+<td><span class="number">34,290</span></td>
+<td><span class="number">45,720</span></td>
+<td><span class="number positive">+14.5%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
 <td><span class="number">7,523</span></td>
 </tr>
 <tr>
-<td><span class="rank ">4</span></td>
+<td><span class="rank ">5</span></td>
+<td><span class="code">38390</span></td>
+<td><span class="name">레드캡투어</span></td>
+<td><span class="number">12,850</span></td>
+<td><span class="number">12,850</span></td>
+<td><span class="number">11,565</span></td>
+<td><span class="number">15,420</span></td>
+<td><span class="number positive">+14.4%</span></td>
+<td><span class="date">02/04</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">2,149</span></td>
+</tr>
+<tr>
+<td><span class="rank ">6</span></td>
 <td><span class="code">19210</span></td>
 <td><span class="name">와이지-원</span></td>
-<td><span class="number">8,600</span></td>
-<td><span class="number">8,600</span></td>
-<td><span class="number">7,740</span></td>
-<td><span class="number">10,320</span></td>
-<td><span class="number positive">+14.2%</span></td>
+<td><span class="number">8,620</span></td>
+<td><span class="number">8,590</span></td>
+<td><span class="number">7,758</span></td>
+<td><span class="number">10,344</span></td>
+<td><span class="number positive">+14.1%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
 <td><span class="number">2,924</span></td>
 </tr>
 <tr>
-<td><span class="rank ">5</span></td>
-<td><span class="code">38390</span></td>
-<td><span class="name">레드캡투어</span></td>
-<td><span class="number">12,870</span></td>
-<td><span class="number">12,820</span></td>
-<td><span class="number">11,583</span></td>
-<td><span class="number">15,444</span></td>
-<td><span class="number positive">+14.2%</span></td>
-<td><span class="date">02/04</span></td>
-<td><span class="pattern">W바닥</span></td>
-<td><span class="pattern">상승패턴, 이격도7.4%+기울기0.96%</span></td>
-<td><span class="number">2,149</span></td>
-</tr>
-<tr>
-<td><span class="rank ">6</span></td>
+<td><span class="rank ">7</span></td>
 <td><span class="code">23530</span></td>
 <td><span class="name">롯데쇼핑</span></td>
-<td><span class="number">95,500</span></td>
-<td><span class="number">95,000</span></td>
-<td><span class="number">85,950</span></td>
-<td><span class="number">114,600</span></td>
-<td><span class="number positive">+14.0%</span></td>
+<td><span class="number">96,000</span></td>
+<td><span class="number">95,700</span></td>
+<td><span class="number">86,400</span></td>
+<td><span class="number">115,200</span></td>
+<td><span class="number positive">+14.1%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
 <td><span class="number">26,705</span></td>
 </tr>
 <tr>
-<td><span class="rank ">7</span></td>
+<td><span class="rank ">8</span></td>
 <td><span class="code">252990</span></td>
 <td><span class="name">샘씨엔에스</span></td>
-<td><span class="number">10,740</span></td>
 <td><span class="number">10,850</span></td>
-<td><span class="number">9,666</span></td>
-<td><span class="number">12,888</span></td>
-<td><span class="number positive">+13.5%</span></td>
+<td><span class="number">10,880</span></td>
+<td><span class="number">9,765</span></td>
+<td><span class="number">13,020</span></td>
+<td><span class="number positive">+13.6%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
 <td><span class="number">6,469</span></td>
 </tr>
 <tr>
-<td><span class="rank ">8</span></td>
+<td><span class="rank ">9</span></td>
 <td><span class="code">222080</span></td>
 <td><span class="name">씨아이에스</span></td>
-<td><span class="number">13,190</span></td>
-<td><span class="number">13,140</span></td>
-<td><span class="number">11,871</span></td>
-<td><span class="number">15,828</span></td>
+<td><span class="number">13,290</span></td>
+<td><span class="number">13,170</span></td>
+<td><span class="number">11,961</span></td>
+<td><span class="number">15,948</span></td>
 <td><span class="number positive">+13.5%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
@@ -881,41 +911,55 @@
 <td><span class="number">10,306</span></td>
 </tr>
 <tr>
-<td><span class="rank ">9</span></td>
+<td><span class="rank ">10</span></td>
 <td><span class="code">272210</span></td>
 <td><span class="name">한화시스템</span></td>
-<td><span class="number">122,000</span></td>
-<td><span class="number">122,600</span></td>
-<td><span class="number">109,800</span></td>
-<td><span class="number">146,400</span></td>
-<td><span class="number positive">+12.4%</span></td>
+<td><span class="number">122,500</span></td>
+<td><span class="number">121,900</span></td>
+<td><span class="number">110,250</span></td>
+<td><span class="number">147,000</span></td>
+<td><span class="number positive">+12.3%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">상승삼각</span></td>
 <td><span class="pattern">상승패턴</span></td>
 <td><span class="number">226,892</span></td>
 </tr>
 <tr>
-<td><span class="rank ">10</span></td>
+<td><span class="rank ">11</span></td>
 <td><span class="code">80160</span></td>
 <td><span class="name">모두투어</span></td>
-<td><span class="number">12,280</span></td>
-<td><span class="number">12,270</span></td>
-<td><span class="number">11,052</span></td>
-<td><span class="number">14,736</span></td>
-<td><span class="number positive">+12.0%</span></td>
+<td><span class="number">12,430</span></td>
+<td><span class="number">12,400</span></td>
+<td><span class="number">11,187</span></td>
+<td><span class="number">14,916</span></td>
+<td><span class="number positive">+12.2%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
 <td><span class="number">2,249</span></td>
 </tr>
 <tr>
-<td><span class="rank ">11</span></td>
+<td><span class="rank ">12</span></td>
+<td><span class="code">323280</span></td>
+<td><span class="name">태성</span></td>
+<td><span class="number">76,400</span></td>
+<td><span class="number">76,800</span></td>
+<td><span class="number">68,760</span></td>
+<td><span class="number">91,680</span></td>
+<td><span class="number positive">+12.1%</span></td>
+<td><span class="date">02/04</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">22,079</span></td>
+</tr>
+<tr>
+<td><span class="rank ">13</span></td>
 <td><span class="code">60280</span></td>
 <td><span class="name">큐렉소</span></td>
-<td><span class="number">20,000</span></td>
-<td><span class="number">20,200</span></td>
-<td><span class="number">18,000</span></td>
-<td><span class="number">24,000</span></td>
+<td><span class="number">20,250</span></td>
+<td><span class="number">20,250</span></td>
+<td><span class="number">18,225</span></td>
+<td><span class="number">24,300</span></td>
 <td><span class="number positive">+12.0%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
@@ -923,13 +967,27 @@
 <td><span class="number">8,218</span></td>
 </tr>
 <tr>
-<td><span class="rank ">12</span></td>
+<td><span class="rank ">14</span></td>
+<td><span class="code">1740</span></td>
+<td><span class="name">SK네트웍스</span></td>
+<td><span class="number">5,370</span></td>
+<td><span class="number">5,370</span></td>
+<td><span class="number">4,833</span></td>
+<td><span class="number">6,444</span></td>
+<td><span class="number positive">+11.9%</span></td>
+<td><span class="date">02/04</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">11,794</span></td>
+</tr>
+<tr>
+<td><span class="rank ">15</span></td>
 <td><span class="code">420770</span></td>
 <td><span class="name">기가비스</span></td>
-<td><span class="number">57,600</span></td>
-<td><span class="number">58,200</span></td>
-<td><span class="number">51,840</span></td>
-<td><span class="number">69,120</span></td>
+<td><span class="number">58,400</span></td>
+<td><span class="number">58,000</span></td>
+<td><span class="number">52,560</span></td>
+<td><span class="number">70,080</span></td>
 <td><span class="number positive">+11.9%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">상승삼각</span></td>
@@ -937,70 +995,28 @@
 <td><span class="number">7,086</span></td>
 </tr>
 <tr>
-<td><span class="rank ">13</span></td>
-<td><span class="code">1740</span></td>
-<td><span class="name">SK네트웍스</span></td>
-<td><span class="number">5,370</span></td>
-<td><span class="number">5,360</span></td>
-<td><span class="number">4,833</span></td>
-<td><span class="number">6,444</span></td>
-<td><span class="number positive">+11.8%</span></td>
-<td><span class="date">02/04</span></td>
-<td><span class="pattern">W바닥</span></td>
-<td><span class="pattern">상승패턴</span></td>
-<td><span class="number">11,794</span></td>
-</tr>
-<tr>
-<td><span class="rank ">14</span></td>
+<td><span class="rank ">16</span></td>
 <td><span class="code">119830</span></td>
 <td><span class="name">119830</span></td>
-<td><span class="number">9,380</span></td>
-<td><span class="number">9,390</span></td>
-<td><span class="number">8,442</span></td>
-<td><span class="number">11,256</span></td>
-<td><span class="number positive">+11.4%</span></td>
+<td><span class="number">9,550</span></td>
+<td><span class="number">9,450</span></td>
+<td><span class="number">8,595</span></td>
+<td><span class="number">11,460</span></td>
+<td><span class="number positive">+11.5%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">상승삼각</span></td>
 <td><span class="pattern">상승패턴</span></td>
 <td><span class="number">2,109</span></td>
 </tr>
 <tr>
-<td><span class="rank ">15</span></td>
-<td><span class="code">85660</span></td>
-<td><span class="name">차바이오텍</span></td>
-<td><span class="number">22,000</span></td>
-<td><span class="number">22,150</span></td>
-<td><span class="number">19,800</span></td>
-<td><span class="number">26,400</span></td>
-<td><span class="number positive">+11.4%</span></td>
-<td><span class="date">02/04</span></td>
-<td><span class="pattern">W바닥</span></td>
-<td><span class="pattern">상승패턴</span></td>
-<td><span class="number">17,784</span></td>
-</tr>
-<tr>
-<td><span class="rank ">16</span></td>
-<td><span class="code">86790</span></td>
-<td><span class="name">하나금융지주</span></td>
-<td><span class="number">113,000</span></td>
-<td><span class="number">112,300</span></td>
-<td><span class="number">101,700</span></td>
-<td><span class="number">135,600</span></td>
-<td><span class="number positive">+11.2%</span></td>
-<td><span class="date">02/04</span></td>
-<td><span class="pattern">W바닥</span></td>
-<td><span class="pattern">상승패턴</span></td>
-<td><span class="number">313,952</span></td>
-</tr>
-<tr>
 <td><span class="rank ">17</span></td>
 <td><span class="code">81660</span></td>
 <td><span class="name">미스토홀딩스</span></td>
-<td><span class="number">48,700</span></td>
-<td><span class="number">48,750</span></td>
-<td><span class="number">43,830</span></td>
-<td><span class="number">58,440</span></td>
-<td><span class="number positive">+11.2%</span></td>
+<td><span class="number">48,600</span></td>
+<td><span class="number">48,350</span></td>
+<td><span class="number">43,740</span></td>
+<td><span class="number">58,320</span></td>
+<td><span class="number positive">+11.4%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">상승삼각</span></td>
 <td><span class="pattern">상승패턴</span></td>
@@ -1008,27 +1024,27 @@
 </tr>
 <tr>
 <td><span class="rank ">18</span></td>
-<td><span class="code">17670</span></td>
-<td><span class="name">SK텔레콤</span></td>
-<td><span class="number">77,300</span></td>
-<td><span class="number">77,400</span></td>
-<td><span class="number">69,570</span></td>
-<td><span class="number">92,760</span></td>
-<td><span class="number positive">+11.1%</span></td>
+<td><span class="code">85660</span></td>
+<td><span class="name">차바이오텍</span></td>
+<td><span class="number">22,150</span></td>
+<td><span class="number">22,100</span></td>
+<td><span class="number">19,935</span></td>
+<td><span class="number">26,580</span></td>
+<td><span class="number positive">+11.3%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
-<td><span class="number">166,677</span></td>
+<td><span class="number">17,784</span></td>
 </tr>
 <tr>
 <td><span class="rank ">19</span></td>
 <td><span class="code">214370</span></td>
 <td><span class="name">케어젠</span></td>
-<td><span class="number">123,100</span></td>
-<td><span class="number">124,700</span></td>
-<td><span class="number">110,790</span></td>
-<td><span class="number">147,720</span></td>
-<td><span class="number positive">+11.1%</span></td>
+<td><span class="number">126,000</span></td>
+<td><span class="number">125,700</span></td>
+<td><span class="number">113,400</span></td>
+<td><span class="number">151,200</span></td>
+<td><span class="number positive">+11.3%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
@@ -1036,17 +1052,17 @@
 </tr>
 <tr>
 <td><span class="rank ">20</span></td>
-<td><span class="code">2380</span></td>
-<td><span class="name">KCC</span></td>
-<td><span class="number">519,000</span></td>
-<td><span class="number">516,000</span></td>
-<td><span class="number">467,100</span></td>
-<td><span class="number">622,800</span></td>
-<td><span class="number positive">+11.1%</span></td>
+<td><span class="code">17670</span></td>
+<td><span class="name">SK텔레콤</span></td>
+<td><span class="number">78,400</span></td>
+<td><span class="number">77,800</span></td>
+<td><span class="number">70,560</span></td>
+<td><span class="number">94,080</span></td>
+<td><span class="number positive">+11.3%</span></td>
 <td><span class="date">02/04</span></td>
 <td><span class="pattern">W바닥</span></td>
 <td><span class="pattern">상승패턴</span></td>
-<td><span class="number">45,854</span></td>
+<td><span class="number">166,677</span></td>
 </tr>
 </tbody></table>
                     </div>
@@ -1069,7 +1085,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-04</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-04 14:08:16</strong></span>
+                        <span>Generated: <strong>2026-02-04 15:08:05</strong></span>
                     </div>
                 </header>
 
@@ -1093,133 +1109,133 @@
 <tbody>
 <tr>
 <td><span class="rank rank-1">1</span></td>
-<td><span class="code">2020</span></td>
-<td><span class="name">코오롱</span></td>
-<td><span class="number">69,000</span></td>
-<td><span class="number">55,200</span></td>
-<td><span class="number">89,700</span></td>
-<td><span class="number positive">+11.2%</span></td>
-<td><span class="number">10.1%</span></td>
-<td><span class="number positive">+2.37</span></td>
-<td><span class="pattern">상승패턴, 이격10.1%+기울기2.37%</span></td>
-<td><span class="number">5,712</span></td>
+<td><span class="code">9830</span></td>
+<td><span class="name">한화솔루션</span></td>
+<td><span class="number">36,300</span></td>
+<td><span class="number">29,040</span></td>
+<td><span class="number">47,190</span></td>
+<td><span class="number positive">+12.2%</span></td>
+<td><span class="number">8.9%</span></td>
+<td><span class="number positive">+2.25</span></td>
+<td><span class="pattern">상승패턴, 이격8.9%+기울기2.25%</span></td>
+<td><span class="number">48,216</span></td>
 </tr>
 <tr>
 <td><span class="rank rank-2">2</span></td>
-<td><span class="code">7070</span></td>
-<td><span class="name">GS리테일</span></td>
-<td><span class="number">23,000</span></td>
-<td><span class="number">18,400</span></td>
-<td><span class="number">29,900</span></td>
-<td><span class="number positive">+7.9%</span></td>
-<td><span class="number">3.0%</span></td>
-<td><span class="number negative">-0.09</span></td>
+<td><span class="code">80160</span></td>
+<td><span class="name">모두투어</span></td>
+<td><span class="number">12,460</span></td>
+<td><span class="number">9,968</span></td>
+<td><span class="number">16,198</span></td>
+<td><span class="number positive">+11.2%</span></td>
+<td><span class="number">5.7%</span></td>
+<td><span class="number positive">+0.51</span></td>
 <td><span class="pattern">상승패턴</span></td>
-<td><span class="number">17,725</span></td>
+<td><span class="number">2,003</span></td>
 </tr>
 <tr>
 <td><span class="rank rank-3">3</span></td>
-<td><span class="code">99320</span></td>
-<td><span class="name">쎄트렉아이</span></td>
-<td><span class="number">208,500</span></td>
-<td><span class="number">166,800</span></td>
-<td><span class="number">271,050</span></td>
-<td><span class="number positive">+7.8%</span></td>
-<td><span class="number">6.8%</span></td>
-<td><span class="number positive">+1.28</span></td>
-<td><span class="pattern">이격6.8%+기울기1.28%</span></td>
-<td><span class="number">15,617</span></td>
+<td><span class="code">7160</span></td>
+<td><span class="name">사조산업</span></td>
+<td><span class="number">71,200</span></td>
+<td><span class="number">56,960</span></td>
+<td><span class="number">92,560</span></td>
+<td><span class="number positive">+11.0%</span></td>
+<td><span class="number">7.1%</span></td>
+<td><span class="number positive">+1.40</span></td>
+<td><span class="pattern">상승패턴, 이격7.1%+기울기1.40%</span></td>
+<td><span class="number">2,800</span></td>
 </tr>
 <tr>
 <td><span class="rank ">4</span></td>
-<td><span class="code">371950</span></td>
-<td><span class="name">풍원정밀</span></td>
-<td><span class="number">12,600</span></td>
-<td><span class="number">10,080</span></td>
-<td><span class="number">16,380</span></td>
-<td><span class="number positive">+7.7%</span></td>
-<td><span class="number">7.9%</span></td>
-<td><span class="number positive">+1.94</span></td>
-<td><span class="pattern">이격7.9%+기울기1.94%</span></td>
-<td><span class="number">2,713</span></td>
+<td><span class="code">77360</span></td>
+<td><span class="name">덕산하이메탈</span></td>
+<td><span class="number">11,840</span></td>
+<td><span class="number">9,472</span></td>
+<td><span class="number">15,392</span></td>
+<td><span class="number positive">+10.9%</span></td>
+<td><span class="number">13.9%</span></td>
+<td><span class="number positive">+2.33</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">3,640</span></td>
 </tr>
 <tr>
 <td><span class="rank ">5</span></td>
-<td><span class="code">244920</span></td>
-<td><span class="name">에이플러스에셋</span></td>
-<td><span class="number">13,330</span></td>
-<td><span class="number">10,664</span></td>
-<td><span class="number">17,329</span></td>
-<td><span class="number positive">+7.1%</span></td>
-<td><span class="number">5.5%</span></td>
-<td><span class="number positive">+1.11</span></td>
-<td><span class="pattern">이격5.5%+기울기1.11%</span></td>
-<td><span class="number">2,410</span></td>
+<td><span class="code">82640</span></td>
+<td><span class="name">동양생명</span></td>
+<td><span class="number">7,500</span></td>
+<td><span class="number">6,000</span></td>
+<td><span class="number">9,750</span></td>
+<td><span class="number positive">+10.3%</span></td>
+<td><span class="number">5.2%</span></td>
+<td><span class="number positive">+0.32</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">10,811</span></td>
 </tr>
 <tr>
 <td><span class="rank ">6</span></td>
-<td><span class="code">272210</span></td>
-<td><span class="name">한화시스템</span></td>
-<td><span class="number">118,600</span></td>
-<td><span class="number">94,880</span></td>
-<td><span class="number">154,180</span></td>
-<td><span class="number positive">+7.1%</span></td>
-<td><span class="number">12.2%</span></td>
-<td><span class="number positive">+4.18</span></td>
-<td><span class="pattern">이격12.2%+기울기4.18%</span></td>
-<td><span class="number">167,383</span></td>
+<td><span class="code">12750</span></td>
+<td><span class="name">에스원</span></td>
+<td><span class="number">86,500</span></td>
+<td><span class="number">69,200</span></td>
+<td><span class="number">112,450</span></td>
+<td><span class="number positive">+9.9%</span></td>
+<td><span class="number">4.5%</span></td>
+<td><span class="number positive">+0.40</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">29,867</span></td>
 </tr>
 <tr>
 <td><span class="rank ">7</span></td>
-<td><span class="code">5680</span></td>
-<td><span class="name">삼영전자</span></td>
-<td><span class="number">11,780</span></td>
-<td><span class="number">9,424</span></td>
-<td><span class="number">15,314</span></td>
-<td><span class="number positive">+6.8%</span></td>
-<td><span class="number">3.1%</span></td>
-<td><span class="number positive">+0.36</span></td>
-<td><span class="pattern">상승패턴</span></td>
-<td><span class="number">2,172</span></td>
+<td><span class="code">178920</span></td>
+<td><span class="name">PI첨단소재</span></td>
+<td><span class="number">19,520</span></td>
+<td><span class="number">15,616</span></td>
+<td><span class="number">25,376</span></td>
+<td><span class="number positive">+9.7%</span></td>
+<td><span class="number">7.4%</span></td>
+<td><span class="number positive">+1.73</span></td>
+<td><span class="pattern">상승패턴, 이격7.4%+기울기1.73%</span></td>
+<td><span class="number">4,713</span></td>
 </tr>
 <tr>
 <td><span class="rank ">8</span></td>
-<td><span class="code">127120</span></td>
-<td><span class="name">제이에스링크</span></td>
-<td><span class="number">28,850</span></td>
-<td><span class="number">23,080</span></td>
-<td><span class="number">37,505</span></td>
-<td><span class="number positive">+6.7%</span></td>
-<td><span class="number">11.1%</span></td>
-<td><span class="number positive">+2.18</span></td>
-<td><span class="pattern">상승패턴, 이격11.1%+기울기2.18%</span></td>
-<td><span class="number">6,428</span></td>
+<td><span class="code">322000</span></td>
+<td><span class="name">HD현대에너지솔루션</span></td>
+<td><span class="number">70,500</span></td>
+<td><span class="number">56,400</span></td>
+<td><span class="number">91,650</span></td>
+<td><span class="number positive">+9.5%</span></td>
+<td><span class="number">9.4%</span></td>
+<td><span class="number positive">+3.14</span></td>
+<td><span class="pattern">이격9.4%+기울기3.14%</span></td>
+<td><span class="number">6,216</span></td>
 </tr>
 <tr>
 <td><span class="rank ">9</span></td>
-<td><span class="code">267270</span></td>
-<td><span class="name">HD현대건설기계</span></td>
-<td><span class="number">126,500</span></td>
-<td><span class="number">101,200</span></td>
-<td><span class="number">164,450</span></td>
-<td><span class="number positive">+6.7%</span></td>
-<td><span class="number">7.4%</span></td>
-<td><span class="number positive">+1.63</span></td>
-<td><span class="pattern">상승패턴, 이격7.4%+기울기1.63%</span></td>
-<td><span class="number">19,406</span></td>
+<td><span class="code">112610</span></td>
+<td><span class="name">씨에스윈드</span></td>
+<td><span class="number">45,200</span></td>
+<td><span class="number">36,160</span></td>
+<td><span class="number">58,760</span></td>
+<td><span class="number positive">+9.0%</span></td>
+<td><span class="number">5.9%</span></td>
+<td><span class="number positive">+1.02</span></td>
+<td><span class="pattern">상승패턴, 이격5.9%+기울기1.02%</span></td>
+<td><span class="number">16,890</span></td>
 </tr>
 <tr>
 <td><span class="rank ">10</span></td>
-<td><span class="code">3380</span></td>
-<td><span class="name">하림지주</span></td>
-<td><span class="number">15,330</span></td>
-<td><span class="number">12,264</span></td>
-<td><span class="number">19,929</span></td>
-<td><span class="number positive">+6.1%</span></td>
-<td><span class="number">6.0%</span></td>
-<td><span class="number positive">+1.03</span></td>
-<td><span class="pattern">이격6.0%+기울기1.03%</span></td>
-<td><span class="number">12,421</span></td>
+<td><span class="code">1800</span></td>
+<td><span class="name">오리온홀딩스</span></td>
+<td><span class="number">22,650</span></td>
+<td><span class="number">18,120</span></td>
+<td><span class="number">29,445</span></td>
+<td><span class="number positive">+8.9%</span></td>
+<td><span class="number">3.5%</span></td>
+<td><span class="number positive">+0.40</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">12,874</span></td>
 </tr>
 </tbody></table>
                     </div>
@@ -1243,7 +1259,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-04</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-04 14:08:16</strong></span>
+                        <span>Generated: <strong>2026-02-04 15:08:05</strong></span>
                     </div>
                 </header>
 
@@ -1390,7 +1406,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-04</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-04 14:08:16</strong></span>
+                        <span>Generated: <strong>2026-02-04 15:08:05</strong></span>
                     </div>
                 </header>
 
@@ -1884,7 +1900,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-04</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-04 14:08:16</strong></span>
+                        <span>Generated: <strong>2026-02-04 15:08:05</strong></span>
                     </div>
                 </header>
 
