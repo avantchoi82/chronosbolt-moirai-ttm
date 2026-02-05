@@ -1,30 +1,30 @@
 ﻿# KRX Daily Top30 LGBM System Report
-# Generated: 2026-02-04 11:40:30
+# Generated: 2026-02-05 11:40:31
 # Data Date: 2026-01-15
 #
 # ===== BACKTEST RESULTS (OOS Period) =====
 # Period: 2023-06-09 ~ 2026-01-15
 # Trading Days: 633
 # Initial Capital: 100,000,000
-# Final Capital: 184,066,212
+# Final Capital: 186,574,992
 #
-# Total Return: 84.07%
-# CAGR: 27.49%
+# Total Return: 86.57%
+# CAGR: 28.18%
 # MDD: 22.78%
 # MDD Period: 2024-10-08 ~ 2024-12-09
-# Volatility: 23.39%
+# Volatility: 23.41%
 #
-# Sharpe Ratio: 1.05
-# Sortino Ratio: 1.47
-# Calmar Ratio: 1.21
+# Sharpe Ratio: 1.08
+# Sortino Ratio: 1.52
+# Calmar Ratio: 1.24
 #
 # Monthly Win Rate: 19/31 (61.3%)
-# 2025 Return: 26.26%
+# 2025 Return: 27.07%
 #
 # ----- Yearly Returns -----
-# 2024: 28.40%
-# 2025: 29.61%
-# 2026: 0.34%
+# 2024: 28.42%
+# 2025: 30.45%
+# 2026: 1.74%
 #
 # ===== STRATEGY SETTINGS =====
 # Top N: 20
