@@ -439,7 +439,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-19</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-19 14:08:02</strong></span>
+                        <span>Generated: <strong>2026-02-19 15:08:03</strong></span>
                     </div>
                 </header>
 
@@ -742,91 +742,327 @@
                 <div class="section">
                     <h2 class="section-title">&#128176; Real CAP (&#49884;&#44032;&#52509;&#50529; &#44592;&#51456;)</h2>
                     <div class="table-wrapper">
-                        <table>
+                        <div class="csv-comments" style="padding: 10px 15px; margin-bottom: 10px; background: rgba(0, 212, 255, 0.1); border-radius: 8px; font-size: 0.85rem; color: #aaa;">
+<div>백테스트 기반 매매 전략 - 스캔일시: 2026-02-19 14:13</div>
+<div>[백테스트] max_return_regime_optimization | 최적화일: 2026-02-19</div>
+<div>[성과] IS: 17.31% (MDD -82.68%) | OOS: 343.19% (MDD -19.43%)</div>
+<div>[레짐] KOSPI 레짐 필터 적용 (하락장 매수 금지)</div>
+<div>--------------------------------------------------------------------------------</div>
+<div>[매수 OR 조건]</div>
+<div>1. 상승패턴 7종: W바닥, 역헤드앤숄더, 상승삼각형, 상승쐐기, 컵앤핸들, 삼중바닥, 상승채널</div>
+<div>2. 이격도+기울기: 20일선 이격도 7.5% 이내 AND 5일VWMA 기울기 0.6%+</div>
+<div>3. 골든크로스: 3일VWMA > 20일VWMA 상향돌파</div>
+<div>[매수 AND 필터]</div>
+<div>- 이격도상한: 20일 <= 45.0%</div>
+<div>- 시총: 2000억+ | 급등필터: 일일 30%+ 제외</div>
+<div>- KOSPI 레짐: 하락장(20일선<180일선) 매수 금지</div>
+<div>--------------------------------------------------------------------------------</div>
+<div>[매도 OR 조건]</div>
+<div>1. 하락패턴 7종: M천장, 헤드앤숄더, 하락삼각형, 하락쐐기 등</div>
+<div>2. 이격도과열: 20일선 >= 100.0%</div>
+<div>3. 기울기하락: 10일VWMA 기울기 < 0</div>
+<div>4. 데드크로스: 5일VWMA < 20일VWMA 하향돌파</div>
+<div>5. 손절: 진입가 대비 -25.0%</div>
+<div>6. Stale Exit: 20거래일 보유 후 +10% 미달 시 매도</div>
+<div>--------------------------------------------------------------------------------</div>
+<div>[체결] 익일 시가 매수/매도 | 최대포지션: 3종목</div>
+<div>[손익] 손절 -25.0% | 익절 +50.0% (R:R 1:2)</div>
+</div>
+<table>
 <thead><tr>
 <th>#</th>
-<th>3</th>
+<th>코드</th>
+<th>종목명</th>
+<th>현재가</th>
+<th>돌파가</th>
+<th>손절가</th>
+<th>익절가</th>
+<th>VAM</th>
+<th>돌파일</th>
+<th>패턴</th>
+<th>사유</th>
+<th>시총(억)</th>
 </tr></thead>
 <tbody>
 <tr>
 <td><span class="rank rank-1">1</span></td>
-<td>이격도100</td>
+<td><span class="code">139130</span></td>
+<td><span class="name">iM금융지주</span></td>
+<td><span class="number">20,350</span></td>
+<td><span class="number">20,800</span></td>
+<td><span class="number">15,262</span></td>
+<td><span class="number">30,525</span></td>
+<td><span class="number positive">+23.3%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">33,410</span></td>
 </tr>
 <tr>
 <td><span class="rank rank-2">2</span></td>
-<td>43.6</td>
+<td><span class="code">138930</span></td>
+<td><span class="name">BNK금융지주</span></td>
+<td><span class="number">22,050</span></td>
+<td><span class="number">22,050</span></td>
+<td><span class="number">16,538</span></td>
+<td><span class="number">33,075</span></td>
+<td><span class="number positive">+23.0%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">68,427</span></td>
 </tr>
 <tr>
 <td><span class="rank rank-3">3</span></td>
-<td>45.1</td>
+<td><span class="code">252990</span></td>
+<td><span class="name">샘씨엔에스</span></td>
+<td><span class="number">11,790</span></td>
+<td><span class="number">11,410</span></td>
+<td><span class="number">8,842</span></td>
+<td><span class="number">17,685</span></td>
+<td><span class="number positive">+18.3%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">6,662</span></td>
 </tr>
 <tr>
 <td><span class="rank ">4</span></td>
-<td>41.3</td>
+<td><span class="code">5830</span></td>
+<td><span class="name">DB손해보험</span></td>
+<td><span class="number">182,900</span></td>
+<td><span class="number">182,100</span></td>
+<td><span class="number">137,175</span></td>
+<td><span class="number">274,350</span></td>
+<td><span class="number positive">+18.1%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">128,927</span></td>
 </tr>
 <tr>
 <td><span class="rank ">5</span></td>
-<td>41.6</td>
+<td><span class="code">316140</span></td>
+<td><span class="name">우리금융지주</span></td>
+<td><span class="number">39,050</span></td>
+<td><span class="number">38,950</span></td>
+<td><span class="number">29,288</span></td>
+<td><span class="number">58,575</span></td>
+<td><span class="number positive">+17.3%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">285,923</span></td>
 </tr>
 <tr>
 <td><span class="rank ">6</span></td>
-<td>37.5</td>
+<td><span class="code">5090</span></td>
+<td><span class="name">SGC에너지</span></td>
+<td><span class="number">44,200</span></td>
+<td><span class="number">39,650</span></td>
+<td><span class="number">33,150</span></td>
+<td><span class="number">66,300</span></td>
+<td><span class="number positive">+16.6%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">상승삼각</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">5,713</span></td>
 </tr>
 <tr>
 <td><span class="rank ">7</span></td>
-<td>34.9</td>
+<td><span class="code">93050</span></td>
+<td><span class="name">LF</span></td>
+<td><span class="number">23,500</span></td>
+<td><span class="number">22,800</span></td>
+<td><span class="number">17,625</span></td>
+<td><span class="number">35,250</span></td>
+<td><span class="number positive">+16.3%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">6,667</span></td>
 </tr>
 <tr>
 <td><span class="rank ">8</span></td>
-<td>47.8</td>
+<td><span class="code">175330</span></td>
+<td><span class="name">JB금융지주</span></td>
+<td><span class="number">36,600</span></td>
+<td><span class="number">34,650</span></td>
+<td><span class="number">27,450</span></td>
+<td><span class="number">54,900</span></td>
+<td><span class="number positive">+15.6%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">65,795</span></td>
 </tr>
 <tr>
 <td><span class="rank ">9</span></td>
-<td>20.1</td>
+<td><span class="code">250</span></td>
+<td><span class="name">삼천당제약</span></td>
+<td><span class="number">633,000</span></td>
+<td><span class="number">535,000</span></td>
+<td><span class="number">474,750</span></td>
+<td><span class="number">949,500</span></td>
+<td><span class="number positive">+15.0%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">125,497</span></td>
 </tr>
 <tr>
 <td><span class="rank ">10</span></td>
-<td>89.6</td>
+<td><span class="code">5440</span></td>
+<td><span class="name">현대지에프홀딩스</span></td>
+<td><span class="number">14,470</span></td>
+<td><span class="number">14,420</span></td>
+<td><span class="number">10,852</span></td>
+<td><span class="number">21,705</span></td>
+<td><span class="number positive">+14.7%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">22,481</span></td>
 </tr>
 <tr>
 <td><span class="rank ">11</span></td>
-<td>28.2</td>
+<td><span class="code">267980</span></td>
+<td><span class="name">매일유업</span></td>
+<td><span class="number">40,250</span></td>
+<td><span class="number">40,300</span></td>
+<td><span class="number">30,188</span></td>
+<td><span class="number">60,375</span></td>
+<td><span class="number positive">+14.3%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">3,088</span></td>
 </tr>
 <tr>
 <td><span class="rank ">12</span></td>
-<td>51.4</td>
+<td><span class="code">138040</span></td>
+<td><span class="name">메리츠금융지주</span></td>
+<td><span class="number">135,900</span></td>
+<td><span class="number">136,300</span></td>
+<td><span class="number">101,925</span></td>
+<td><span class="number">203,850</span></td>
+<td><span class="number positive">+14.1%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">상승삼각</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">238,827</span></td>
 </tr>
 <tr>
 <td><span class="rank ">13</span></td>
-<td>34.6</td>
+<td><span class="code">5720</span></td>
+<td><span class="name">넥센</span></td>
+<td><span class="number">7,220</span></td>
+<td><span class="number">7,220</span></td>
+<td><span class="number">5,415</span></td>
+<td><span class="number">10,830</span></td>
+<td><span class="number positive">+14.1%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">3,866</span></td>
 </tr>
 <tr>
 <td><span class="rank ">14</span></td>
-<td>54.3</td>
+<td><span class="code">23410</span></td>
+<td><span class="name">유진기업</span></td>
+<td><span class="number">4,800</span></td>
+<td><span class="number">4,690</span></td>
+<td><span class="number">3,600</span></td>
+<td><span class="number">7,200</span></td>
+<td><span class="number positive">+13.9%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">상승삼각</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">3,626</span></td>
 </tr>
 <tr>
 <td><span class="rank ">15</span></td>
-<td>26.6</td>
+<td><span class="code">33240</span></td>
+<td><span class="name">자화전자</span></td>
+<td><span class="number">43,950</span></td>
+<td><span class="number">42,150</span></td>
+<td><span class="number">32,962</span></td>
+<td><span class="number">65,925</span></td>
+<td><span class="number positive">+13.9%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">9,170</span></td>
 </tr>
 <tr>
 <td><span class="rank ">16</span></td>
-<td>35.8</td>
+<td><span class="code">23760</span></td>
+<td><span class="name">한국캐피탈</span></td>
+<td><span class="number">1,090</span></td>
+<td><span class="number">1,000</span></td>
+<td><span class="number">818</span></td>
+<td><span class="number">1,635</span></td>
+<td><span class="number positive">+13.8%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">3,156</span></td>
 </tr>
 <tr>
 <td><span class="rank ">17</span></td>
-<td>49.6</td>
+<td><span class="code">3690</span></td>
+<td><span class="name">코리안리</span></td>
+<td><span class="number">13,750</span></td>
+<td><span class="number">13,580</span></td>
+<td><span class="number">10,312</span></td>
+<td><span class="number">20,625</span></td>
+<td><span class="number positive">+13.7%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">상승삼각</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">26,457</span></td>
 </tr>
 <tr>
 <td><span class="rank ">18</span></td>
-<td>19.9</td>
+<td><span class="code">11930</span></td>
+<td><span class="name">신성이엔지</span></td>
+<td><span class="number">2,330</span></td>
+<td><span class="number">2,320</span></td>
+<td><span class="number">1,748</span></td>
+<td><span class="number">3,495</span></td>
+<td><span class="number positive">+13.3%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">4,776</span></td>
 </tr>
 <tr>
 <td><span class="rank ">19</span></td>
-<td>22.8</td>
+<td><span class="code">5945</span></td>
+<td><span class="name">NH투자증권우</span></td>
+<td><span class="number">28,750</span></td>
+<td><span class="number">26,400</span></td>
+<td><span class="number">21,562</span></td>
+<td><span class="number">43,125</span></td>
+<td><span class="number positive">+13.3%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">4,982</span></td>
 </tr>
 <tr>
 <td><span class="rank ">20</span></td>
-<td>22.2</td>
+<td><span class="code">33780</span></td>
+<td><span class="name">KT&G</span></td>
+<td><span class="number">175,900</span></td>
+<td><span class="number">173,800</span></td>
+<td><span class="number">131,925</span></td>
+<td><span class="number">263,850</span></td>
+<td><span class="number positive">+13.2%</span></td>
+<td><span class="date">02/13</span></td>
+<td><span class="pattern">W바닥</span></td>
+<td><span class="pattern">상승패턴</span></td>
+<td><span class="number">205,043</span></td>
 </tr>
 </tbody></table>
                     </div>
@@ -1299,7 +1535,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-19</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-19 14:08:02</strong></span>
+                        <span>Generated: <strong>2026-02-19 15:08:03</strong></span>
                     </div>
                 </header>
 
@@ -1434,7 +1670,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-19</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-19 14:08:02</strong></span>
+                        <span>Generated: <strong>2026-02-19 15:08:03</strong></span>
                     </div>
                 </header>
 
@@ -1581,7 +1817,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-19</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-19 14:08:02</strong></span>
+                        <span>Generated: <strong>2026-02-19 15:08:03</strong></span>
                     </div>
                 </header>
 
@@ -2075,7 +2311,7 @@
                     <div class="meta">
                         <span>Date: <strong>2026-02-19</strong></span>
                         <span>|</span>
-                        <span>Generated: <strong>2026-02-19 14:08:02</strong></span>
+                        <span>Generated: <strong>2026-02-19 15:08:03</strong></span>
                     </div>
                 </header>
 
