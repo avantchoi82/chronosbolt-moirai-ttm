@@ -61,6 +61,9 @@ ABOUTKOSDAQ_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\aboutkosdaq")
 # Real Minute source directory (60분봉 데이터)
 REAL_MINUTE_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\real_minute\output")
 
+# XGBOOST source directory
+XGBOOST_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\xgboost\output")
+
 # Output directory
 DOCS_DIR = Path(__file__).parent / "docs"
 
@@ -145,7 +148,7 @@ def get_latest_source_csvs() -> dict[str, Path | None]:
 
     # Define glob patterns per source
     glob_patterns = {
-        "chartking": "top30*.csv",
+        "chartking": "top30_x3*.csv",
     }
 
     for source, directory in SOURCE_DIRS.items():
@@ -239,6 +242,29 @@ def get_latest_lgbm_csv() -> Path | None:
         return latest
     else:
         logger.warning("  lgbm: No CSV files found")
+        return None
+
+
+def get_latest_xgboost_csv() -> Path | None:
+    """Get the latest XGBOOST top20 CSV file.
+
+    Returns:
+        Path to latest file or None if not found
+    """
+    if not XGBOOST_SOURCE_DIR.exists():
+        logger.warning(f"XGBOOST source directory not found: {XGBOOST_SOURCE_DIR}")
+        return None
+
+    # Find top20 CSV files
+    files = list(XGBOOST_SOURCE_DIR.glob("top20_*.csv"))
+
+    if files:
+        files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+        latest = files[0]
+        logger.info(f"  xgboost: {latest.name}")
+        return latest
+    else:
+        logger.warning("  xgboost: No CSV files found")
         return None
 
 
@@ -456,6 +482,10 @@ def run_git_update(
     logger.info("\n[6/9] Finding latest LGBM CSV...")
     lgbm_csv = get_latest_lgbm_csv()
 
+    # Step 7: Get XGBOOST CSV
+    logger.info("\n[7/11] Finding latest XGBOOST CSV...")
+    xgboost_csv = get_latest_xgboost_csv()
+
     # Step 8: Get FRED PNG
     logger.info("\n[7/9] Finding latest FRED PNG...")
     fred_png = get_latest_fred_png()
@@ -463,7 +493,18 @@ def run_git_update(
     # Step 9: Copy files to docs/
     logger.info("\n[8/11] Copying files to docs/...")
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
+    
+    # Copy source CSVs
+    sources_dir = DOCS_DIR / "sources"
+    sources_dir.mkdir(parents=True, exist_ok=True)
+    
     copied_files = copy_source_csvs_to_docs(DOCS_DIR)
+    
+    # Copy XGBOOST CSV if available
+    if xgboost_csv and xgboost_csv.exists():
+        _copy_if_newer(xgboost_csv, sources_dir / xgboost_csv.name)
+        copied_files.append(sources_dir / xgboost_csv.name)
+        
     logger.info(f"Copied {len(copied_files)} files")
 
     # Step 10: AI Analysis (news + summary) for top 10 stocks
@@ -504,6 +545,7 @@ def run_git_update(
         kospidispart_txt=kospidispart_txt,
         real_cap_csv=real_cap_csv,
         minute60_csv=minute60_csv,
+        xgboost_csv=xgboost_csv,
     )
     logger.info(f"HTML generated: {list(html_outputs.keys())}")
 
