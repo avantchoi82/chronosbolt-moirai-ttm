@@ -425,15 +425,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
-        <button class="nav-btn active" onclick="showTab('stocks')" id="btn-stocks">
-            <span class="icon">&#128200;</span>
-            <span>&#51333;&#47785;</span>
+        <button class="nav-btn active" onclick="showTab('chartking')" id="btn-chartking">
+            <span class="icon">&#127775;</span>
+            <span>차트킹</span>
         </button>
+
         <button class="nav-btn" onclick="showTab('minute')" id="btn-minute">
             <span class="icon">&#128338;</span>
             <span>&#48516;&#48393;</span>
         </button>
-<button class="nav-btn" onclick="showTab('macro')" id="btn-macro">
+        <button class="nav-btn" onclick="showTab('macro')" id="btn-macro">
             <span class="icon">&#127760;</span>
             <span>&#47588;&#53356;&#47196;</span>
         </button>
@@ -447,11 +448,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <div class="main-content">
         <div class="container">
 
-            <!-- STOCKS TAB -->
-            <div class="tab-content active" id="tab-stocks">
+            <!-- CHARTKING TAB -->
+            <div class="tab-content active" id="tab-chartking">
                 <header>
-                    <h1>Stock Scanner Source Data</h1>
-                    <div class="subtitle">KOSPI &#49884;&#51109; + ChartKing + &#45800;&#49692;&#47784;&#47704;&#53568; | Stock Picks</div>
+                    <h1>&#127775; ChartKing</h1>
+                    <div class="subtitle">KOSPI Regime + ChartKing &#49324;&#44536;&#45684;</div>
                     <div class="meta">
                         <span>Date: <strong>{date_str}</strong></span>
                         <span>|</span>
@@ -460,16 +461,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </header>
 
                 <div class="section">
-                    <h2 class="section-title">&#128202; KOSDAQ Daily Chart</h2>
-                    <div class="table-wrapper" style="padding: 20px; text-align: center;">
-                        {kosdaq_chart_image}
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2 class="section-title">&#128200; KOSPI &#49884;&#51109; &#49345;&#54889;</h2>
-                    <div class="table-wrapper" style="padding: 20px; font-family: monospace; white-space: pre-line; line-height: 1.6;">
-                        {kospidispart_content}
+                    <h2 class="section-title">&#128200; KOSPI Regime (&#49884;&#51109; &#51221;&#48177;&#50672;)</h2>
+                    <div class="table-wrapper">
+                        {kospi_regime_table}
                     </div>
                 </div>
 
@@ -488,6 +482,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                     </div>
                 </div>
             </div>
+
+
 
             <!-- MINUTE TAB -->
             <div class="tab-content" id="tab-minute">
@@ -869,7 +865,7 @@ def _chartking_buy_sell_html(
     comments: list[str] | None = None,
     summaries: dict[str, "StockSummary"] | None = None,
 ) -> str:
-    """Render chartking DataFrame split into Buy / Sell / StopLoss / Converted / Settings sections."""
+    """Render chartking DataFrame as a single full table (Excel-style)."""
     html_parts = []
 
     # Comments
@@ -879,134 +875,64 @@ def _chartking_buy_sell_html(
             html_parts.append(f'<div>{comment}</div>')
         html_parts.append('</div>')
 
-    # Split by 구분
-    today_signal_df = df[df["구분"] == "오늘신호"].reset_index(drop=True)
-    buy_df = df[df["구분"] == "매수"].reset_index(drop=True)
-    buy_candidate_df = df[df["구분"] == "매수후보"].reset_index(drop=True)
-    sell_df = df[df["구분"] == "매도"].reset_index(drop=True)
-    stoploss_df = df[df["구분"] == "손절하락"].reset_index(drop=True)
-    converted_df = df[df["구분"] == "매도전환"].reset_index(drop=True)
-    settings_df = df[df["구분"] == "설정"].reset_index(drop=True)
+    # 구분별 행 색상
+    ROW_COLORS = {
+        "오늘신호":   "rgba(255, 193,   7, 0.12)",
+        "매수":       "rgba(  0, 200,  83, 0.10)",
+        "매수후보":   "rgba(  0, 172, 193, 0.10)",
+        "매도":       "rgba(255,  23,  68, 0.07)",
+        "손절하락":   "rgba(255, 145,   0, 0.12)",
+        "매도전환":   "rgba(186, 104, 200, 0.12)",
+        "설정":       "rgba(100, 181, 246, 0.08)",
+    }
+    LABEL_COLORS = {
+        "오늘신호":  "#ffc107",
+        "매수":      "#00e676",
+        "매수후보":  "#4dd0e1",
+        "매도":      "#ff5252",
+        "손절하락":  "#ff9100",
+        "매도전환":  "#ba68c8",
+        "설정":      "#64b5f6",
+    }
 
-    code_col = "티커" if "티커" in df.columns else None
-
-    # Column definitions per section
-    today_cols = ["티커", "종목명", "현재가", "신호가", "신호일", "매도예정", "모멘텀(%)", "패턴", "손절가", "익절가", "손익률(%)"]
-    today_names = {"티커": "코드", "종목명": "종목명", "현재가": "현재가", "신호가": "신호가",
-                   "신호일": "신호일", "매도예정": "매도예정", "모멘텀(%)": "모멘텀(%)",
-                   "패턴": "패턴", "손절가": "손절가", "익절가": "익절가", "손익률(%)": "손익률(%)"}
-
-    buy_cols = ["티커", "종목명", "현재가", "신호가", "신호일", "매도예정", "모멘텀(%)", "패턴", "손절가", "익절가", "손익률(%)"]
-    buy_names = {"티커": "코드", "종목명": "종목명", "현재가": "현재가", "신호가": "신호가",
-                 "신호일": "신호일", "매도예정": "매도예정", "모멘텀(%)": "모멘텀(%)",
-                 "패턴": "패턴", "손절가": "손절가", "익절가": "익절가", "손익률(%)": "손익률(%)"}
-
-    candidate_cols = ["티커", "종목명", "현재가", "신호가", "신호일", "매도예정", "모멘텀(%)", "패턴", "손절가", "익절가", "손익률(%)"]
-    candidate_names = {"티커": "코드", "종목명": "종목명", "현재가": "현재가", "신호가": "신호가",
-                       "신호일": "신호일", "매도예정": "매도예정", "모멘텀(%)": "모멘텀(%)",
-                       "패턴": "패턴", "손절가": "손절가", "익절가": "익절가", "손익률(%)": "손익률(%)"}
-
-    sell_cols = ["티커", "종목명", "현재가", "신호가", "신호일", "모멘텀(%)", "패턴", "손익률(%)"]
-    sell_names = {"티커": "코드", "종목명": "종목명", "현재가": "현재가", "신호가": "신호가",
-                  "신호일": "신호일", "모멘텀(%)": "모멘텀(%)", "패턴": "패턴", "손익률(%)": "손익률(%)"}
-
-    stoploss_cols = ["티커", "종목명", "현재가", "신호가", "신호일", "매도예정", "모멘텀(%)", "패턴", "손절가", "손익률(%)"]
-    stoploss_names = {"티커": "코드", "종목명": "종목명", "현재가": "현재가", "신호가": "신호가",
-                      "신호일": "신호일", "매도예정": "매도예정", "모멘텀(%)": "모멘텀(%)",
-                      "패턴": "패턴", "손절가": "손절가", "손익률(%)": "손익률(%)"}
-
-    converted_cols = ["티커", "종목명", "현재가", "신호가", "신호일", "매도예정", "익절가", "손익률(%)"]
-    converted_names = {"티커": "코드", "종목명": "종목명", "현재가": "현재가", "신호가": "신호가",
-                       "신호일": "신호일", "매도예정": "매도일", "익절가": "매도가", "손익률(%)": "손익률(%)"}
-
-    # Section configs: (label, icon, df, cols, col_names, text_color, border_color, bg_grad, row_bg)
-    sections = [
-        ("오늘신호", "&#9889;", today_signal_df, today_cols, today_names,
-         "#ffeb3b", "#ffc107", "rgba(255, 193, 7, 0.15)", "rgba(255, 193, 7, 0.05)"),
-        ("매수", "&#128200;", buy_df, buy_cols, buy_names,
-         "#00e676", "#00c853", "rgba(0, 200, 83, 0.15)", None),
-        ("매수후보", "&#128269;", buy_candidate_df, candidate_cols, candidate_names,
-         "#4dd0e1", "#00acc1", "rgba(0, 172, 193, 0.15)", "rgba(0, 172, 193, 0.05)"),
-        ("매도", "&#128201;", sell_df, sell_cols, sell_names,
-         "#ff5252", "#ff1744", "rgba(255, 23, 68, 0.15)", "rgba(255, 23, 68, 0.05)"),
-        ("손절하락", "&#9888;", stoploss_df, stoploss_cols, stoploss_names,
-         "#ff9100", "#ff6d00", "rgba(255, 145, 0, 0.15)", "rgba(255, 145, 0, 0.05)"),
-        ("매도전환", "&#128260;", converted_df, converted_cols, converted_names,
-         "#ba68c8", "#9c27b0", "rgba(186, 104, 200, 0.15)", "rgba(186, 104, 200, 0.05)"),
-    ]
-
-    for label, icon, section_df, cols, col_names, text_color, border_color, bg_grad, row_bg in sections:
-        if section_df.empty:
-            continue
-
-        avail = [c for c in cols if c in df.columns]
-        num_cols = len(avail) + 1
-
+    # 범례
+    html_parts.append('<div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">')
+    for label, color in LABEL_COLORS.items():
+        count = len(df[df["구분"] == label]) if "구분" in df.columns else 0
         html_parts.append(
-            f'<div style="margin-top: 24px; margin-bottom: 8px; padding: 10px 16px; '
-            f'background: linear-gradient(90deg, {bg_grad}, transparent); '
-            f'border-left: 4px solid {border_color}; border-radius: 8px;">'
-            f'<span style="font-size: 1.1rem; font-weight: 700; color: {text_color};">'
-            f'{icon} {label} ({len(section_df)})</span></div>'
+            f'<span style="padding:3px 10px; border-radius:12px; font-size:0.8rem; '
+            f'background:{ROW_COLORS.get(label,"rgba(255,255,255,0.05)")}; '
+            f'border:1px solid {color}; color:{color};">'
+            f'{label} ({count})</span>'
         )
-        html_parts.append("<table>")
-        html_parts.append("<thead><tr><th>#</th>")
-        for col in avail:
-            html_parts.append(f"<th>{col_names.get(col, col)}</th>")
-        html_parts.append("</tr></thead><tbody>")
+    html_parts.append('</div>')
 
-        for idx, (_, row) in enumerate(section_df.iterrows(), 1):
-            row_style = f' style="background: {row_bg};"' if row_bg else ""
-            html_parts.append(f"<tr{row_style}>")
-            rank_class = f"rank-{idx}" if idx <= 3 and label == "매수" else ""
-            html_parts.append(f'<td><span class="rank {rank_class}">{idx}</span></td>')
-            for col in avail:
-                value = row.get(col, "")
-                formatted = _format_source_value(value, col)
+    cols = list(df.columns)
+
+    html_parts.append("<table>")
+    html_parts.append("<thead><tr><th>#</th>")
+    for col in cols:
+        html_parts.append(f"<th>{col}</th>")
+    html_parts.append("</tr></thead><tbody>")
+
+    for idx, (_, row) in enumerate(df.iterrows(), 1):
+        구분값 = str(row.get("구분", ""))
+        bg = ROW_COLORS.get(구분값, "")
+        row_style = f' style="background:{bg};"' if bg else ""
+        html_parts.append(f"<tr{row_style}>")
+        html_parts.append(f'<td style="color:#666;">{idx}</td>')
+        for col in cols:
+            value = row.get(col, "")
+            formatted = _format_source_value(value, col)
+            # 구분 컬럼은 색상 강조
+            if col == "구분":
+                color = LABEL_COLORS.get(구분값, "#aaa")
+                html_parts.append(f'<td style="color:{color}; font-weight:600; white-space:nowrap;">{formatted}</td>')
+            else:
                 html_parts.append(f"<td>{formatted}</td>")
-            html_parts.append("</tr>")
+        html_parts.append("</tr>")
 
-            # AI summary for top 10 buy stocks
-            if label == "매수" and idx <= 10 and summaries and code_col:
-                stock_code = str(row.get(code_col, "")).split(".")[0].zfill(6)
-                summary = summaries.get(stock_code)
-                if summary:
-                    html_parts.append(f'<tr class="summary-row"><td colspan="{num_cols}" class="summary-cell">')
-                    html_parts.append(f'<div class="summary-text"><span class="icon">&#128240;</span>{summary.summary}</div>')
-                    if summary.keywords:
-                        html_parts.append('<div class="keywords">')
-                        for kw in summary.keywords:
-                            html_parts.append(f'<span class="keyword-tag">#{kw}</span>')
-                        html_parts.append('</div>')
-                    html_parts.append('</td></tr>')
-
-        html_parts.append("</tbody></table>")
-
-    # --- Settings section ---
-    if not settings_df.empty:
-        html_parts.append(
-            '<div style="margin-top: 24px; margin-bottom: 8px; padding: 10px 16px; '
-            'background: linear-gradient(90deg, rgba(100, 181, 246, 0.15), transparent); '
-            'border-left: 4px solid #42a5f5; border-radius: 8px;">'
-            '<span style="font-size: 1.1rem; font-weight: 700; color: #64b5f6;">'
-            '&#9881; 설정</span></div>'
-        )
-        html_parts.append(
-            '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); '
-            'gap: 8px; padding: 8px;">'
-        )
-        for _, row in settings_df.iterrows():
-            key = str(row.get("티커", ""))
-            val = str(row.get("종목명", ""))
-            if key == "nan":
-                continue
-            html_parts.append(
-                f'<div style="display: flex; justify-content: space-between; padding: 6px 12px; '
-                f'background: rgba(255,255,255,0.03); border-radius: 6px; font-size: 0.85rem;">'
-                f'<span style="color: #90a4ae;">{key}</span>'
-                f'<span style="color: #e0e0e0; font-weight: 600;">{val}</span></div>'
-            )
-        html_parts.append('</div>')
+    html_parts.append("</tbody></table>")
 
     return "\n".join(html_parts)
 
@@ -1410,6 +1336,93 @@ def _macro_df_to_html_table(df: pd.DataFrame) -> str:
     return "\n".join(html_parts)
 
 
+def _kospi_regime_to_html_table(df: pd.DataFrame) -> str:
+    """Convert kospi_regime DataFrame to HTML table."""
+    if df is None or df.empty:
+        return '<p style="color: #888; padding: 20px;">No KOSPI regime data available</p>'
+
+    # Columns: date, kospi_close, ma_short_12, ma_long_178, disp_short_pct, disp_long_pct, slope5_pct, aligned, regime, status
+    display_cols = ["date", "kospi_close", "ma_short_12", "ma_long_178",
+                    "disp_short_pct", "disp_long_pct", "slope5_pct", "aligned", "status"]
+    available_cols = [c for c in display_cols if c in df.columns]
+
+    col_names = {
+        "date": "날짜",
+        "kospi_close": "KOSPI",
+        "ma_short_12": "단기MA(12)",
+        "ma_long_178": "장기MA(178)",
+        "disp_short_pct": "단기이격(%)",
+        "disp_long_pct": "장기이격(%)",
+        "slope5_pct": "기울기5(%)",
+        "aligned": "정배열",
+        "status": "시장상태",
+    }
+
+    # Status → 배경색 매핑
+    STATUS_COLORS = {
+        "매수허용": ("rgba(0, 200, 83, 0.15)", "#00e676"),
+        "매수금지": ("rgba(255, 71, 87, 0.15)", "#ff5252"),
+        "중립":    ("rgba(100, 181, 246, 0.12)", "#64b5f6"),
+    }
+
+    html_parts = ["<table>", "<thead><tr>"]
+    for col in available_cols:
+        html_parts.append(f"<th>{col_names.get(col, col)}</th>")
+    html_parts.append("</tr></thead><tbody>")
+
+    # Show all rows (usually 1-2 rows)
+    for _, row in df.iterrows():
+        status_val = str(row.get("status", ""))
+        # Match partial status string
+        bg_color, text_color = "",""
+        for key, (bg, txt) in STATUS_COLORS.items():
+            if key in status_val:
+                bg_color, text_color = bg, txt
+                break
+        row_style = f' style="background:{bg_color};"' if bg_color else ""
+        html_parts.append(f"<tr{row_style}>")
+
+        for col in available_cols:
+            value = row.get(col, "")
+            if pd.isna(value):
+                html_parts.append("<td>-</td>")
+                continue
+
+            if col == "date":
+                html_parts.append(f'<td><span class="date">{value}</span></td>')
+            elif col == "kospi_close":
+                try:
+                    html_parts.append(f'<td><span class="number">{float(value):,.2f}</span></td>')
+                except (ValueError, TypeError):
+                    html_parts.append(f"<td>{value}</td>")
+            elif col in ["ma_short_12", "ma_long_178"]:
+                try:
+                    html_parts.append(f'<td><span class="number">{float(value):,.2f}</span></td>')
+                except (ValueError, TypeError):
+                    html_parts.append(f"<td>{value}</td>")
+            elif col in ["disp_short_pct", "disp_long_pct", "slope5_pct"]:
+                try:
+                    val = float(value)
+                    css = "positive" if val > 0 else "negative" if val < 0 else ""
+                    sign = "+" if val > 0 else ""
+                    html_parts.append(f'<td><span class="number {css}">{sign}{val:.2f}%</span></td>')
+                except (ValueError, TypeError):
+                    html_parts.append(f"<td>{value}</td>")
+            elif col == "aligned":
+                aligned_str = "✅ 정배열" if str(value).lower() in ("true", "1") else "❌ 역배열"
+                html_parts.append(f"<td>{aligned_str}</td>")
+            elif col == "status":
+                color = text_color or "#aaa"
+                html_parts.append(f'<td style="color:{color}; font-weight:700;">{value}</td>')
+            else:
+                html_parts.append(f"<td>{value}</td>")
+
+        html_parts.append("</tr>")
+
+    html_parts.append("</tbody></table>")
+    return "\n".join(html_parts)
+
+
 class HTMLGenerator:
     """HTML page generator for ensemble results."""
 
@@ -1444,6 +1457,7 @@ class HTMLGenerator:
         real_cap_csv: Path | None = None,
         minute60_csv: Path | None = None,
         xgboost_csv: Path | None = None,
+        kospi_regime_csv: Path | None = None,
     ) -> dict[str, Path]:
         """Generate HTML pages.
 
@@ -1462,6 +1476,7 @@ class HTMLGenerator:
             real_cap_csv: Path to Real CAP CSV file
             minute60_csv: Path to 60-minute candle CSV file
             xgboost_csv: Path to XGBOOST CSV file
+            kospi_regime_csv: Path to KOSPI regime CSV file (from chartking)
 
         Returns:
             Dictionary of generated file paths
@@ -1485,16 +1500,15 @@ class HTMLGenerator:
                 logger.warning(f"Failed to read KOSPIDISPART txt: {e}")
                 kospidispart_content = f'<p style="color: #888;">Error loading KOSPI market status: {e}</p>'
 
-        # Generate Real CAP table
-        real_cap_table = '<p style="color: #888; padding: 20px;">No Real CAP data available</p>'
-        if real_cap_csv and real_cap_csv.exists():
+        # Generate KOSPI Regime table
+        kospi_regime_table = '<p style="color: #888; padding: 20px;">No KOSPI regime data available</p>'
+        if kospi_regime_csv and kospi_regime_csv.exists():
             try:
-                comments = _extract_csv_comments(real_cap_csv)
-                real_cap_df = pd.read_csv(real_cap_csv, encoding="utf-8-sig", comment="#")
-                real_cap_table = _source_df_to_html_table(real_cap_df, "real", comments, None)
+                regime_df = pd.read_csv(kospi_regime_csv, encoding="utf-8-sig")
+                kospi_regime_table = _kospi_regime_to_html_table(regime_df)
             except Exception as e:
-                logger.warning(f"Failed to read Real CAP CSV: {e}")
-                real_cap_table = f'<p style="color: #888;">Error loading Real CAP data: {e}</p>'
+                logger.warning(f"Failed to read KOSPI regime CSV: {e}")
+                kospi_regime_table = f'<p style="color: #888;">Error loading KOSPI regime data: {e}</p>'
 
         # Generate source tables (chartking only)
         source_tables = {"chartking": ""}
@@ -1595,6 +1609,7 @@ class HTMLGenerator:
             github_repo=self.github_repo,
             kospidispart_content=kospidispart_content,
             kosdaq_chart_image=kosdaq_chart_image,
+            kospi_regime_table=kospi_regime_table,
             chartking_table=source_tables["chartking"],
             macro_table=macro_table,
             korea_macro_table=korea_macro_table,
@@ -1670,6 +1685,7 @@ def generate_html_pages(
     real_cap_csv: Path | None = None,
     minute60_csv: Path | None = None,
     xgboost_csv: Path | None = None,
+    kospi_regime_csv: Path | None = None,
 ) -> dict[str, Path]:
     """Generate HTML pages (convenience function).
 
@@ -1690,6 +1706,7 @@ def generate_html_pages(
         real_cap_csv: Path to Real CAP CSV file
         minute60_csv: Path to 60-minute candle CSV file
         xgboost_csv: Path to XGBOOST CSV file
+        kospi_regime_csv: Path to KOSPI regime CSV file (from chartking)
 
     Returns:
         Dictionary of generated file paths
@@ -1698,5 +1715,5 @@ def generate_html_pages(
     return generator.generate(
         df, as_of_date, top_n, result_csv, source_csvs, macro_csv, korea_macro_csv,
         lgbm_csv, fred_png, stock_summaries, kospidispart_txt, real_cap_csv,
-        minute60_csv, xgboost_csv
+        minute60_csv, xgboost_csv, kospi_regime_csv
     )
