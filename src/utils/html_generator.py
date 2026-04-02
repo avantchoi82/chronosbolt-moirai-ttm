@@ -425,7 +425,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
-        <button class="nav-btn active" onclick="showTab('chartking')" id="btn-chartking">
+        <button class="nav-btn active" onclick="showTab('lgbm')" id="btn-lgbm">
+            <span class="icon">&#129302;</span>
+            <span>LGMB</span>
+        </button>
+        <button class="nav-btn" onclick="showTab('chartking')" id="btn-chartking">
             <span class="icon">&#127775;</span>
             <span>차트킹</span>
         </button>
@@ -448,8 +452,36 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <div class="main-content">
         <div class="container">
 
+            <!-- LGBM TAB -->
+            <div class="tab-content active" id="tab-lgbm">
+                <header>
+                    <h1 class="ml-header">&#129302; LGMB (Machine Learning)</h1>
+                    <div class="subtitle">LGMB | ML-based Stock Recommendations</div>
+                    <div class="meta">
+                        <span>Date: <strong>{date_str}</strong></span>
+                        <span>|</span>
+                        <span>Generated: <strong>{generated_at}</strong></span>
+                    </div>
+                </header>
+
+                <div class="section ml-section">
+                    <h2 class="section-title">&#129302; LGMB Top Recommendations</h2>
+                    <div class="table-wrapper">
+                        {lgbm_table}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Download Data</h2>
+                    <div class="history-link" style="text-align: left; padding: 15px;">
+                        <p style="margin-bottom: 10px; color: #888;">Source CSV Files:</p>
+                        <a href="sources/" target="_blank">&#128193; Download Source CSVs</a>
+                    </div>
+                </div>
+            </div>
+
             <!-- CHARTKING TAB -->
-            <div class="tab-content active" id="tab-chartking">
+            <div class="tab-content" id="tab-chartking">
                 <header>
                     <h1>&#127775; ChartKing</h1>
                     <div class="subtitle">KOSPI Regime + ChartKing &#49324;&#44536;&#45684;</div>
@@ -1004,12 +1036,14 @@ def _source_df_to_html_table(
             "이격도": "이격도",
         }
     elif source == "lgbm":
-        # lgbm: rank, ticker, name, score, score_percentile, market_cap, value_traded_20d, vol_20d, risk_flags
-        display_cols = ["rank", "ticker", "name", "score", "score_percentile", "market_cap", "vol_20d", "risk_flags"]
+        # lgbm: rank, ticker, name, score, score_percentile, market_cap, value_traded_20d, vol_20d, risk_flags, close
+        # 'rank' is handled manually as the first column, so we exclude it from display_cols
+        display_cols = ["ticker", "name", "close", "score", "score_percentile", "market_cap", "vol_20d", "risk_flags"]
         col_names = {
             "rank": "순위",
             "ticker": "코드",
             "name": "종목명",
+            "close": "현재가",
             "score": "점수",
             "score_percentile": "백분위",
             "market_cap": "시총",
@@ -1556,7 +1590,20 @@ class HTMLGenerator:
         if lgbm_csv and lgbm_csv.exists():
             try:
                 lgbm_comments = _extract_csv_comments(lgbm_csv)
+                # Try reading with header first
                 lgbm_df = pd.read_csv(lgbm_csv, encoding="utf-8-sig", comment="#")
+                
+                # Check if first row was actually data (no header case)
+                # If 'rank' (or other expected col) is not in columns, or first col is numeric
+                if not any(c in lgbm_df.columns for c in ["rank", "ticker", "name"]):
+                    # Re-read without header
+                    lgbm_df = pd.read_csv(lgbm_csv, encoding="utf-8-sig", comment="#", header=None)
+                    # Assign columns based on count
+                    if len(lgbm_df.columns) == 5:
+                        lgbm_df.columns = ["rank", "ticker", "name", "close", "score"]
+                    elif len(lgbm_df.columns) == 4:
+                        lgbm_df.columns = ["rank", "ticker", "name", "score"]
+                
                 lgbm_table = _source_df_to_html_table(lgbm_df, "lgbm", lgbm_comments)
             except Exception as e:
                 logger.warning(f"Failed to read LGBM CSV: {e}")
@@ -1611,6 +1658,7 @@ class HTMLGenerator:
             kosdaq_chart_image=kosdaq_chart_image,
             kospi_regime_table=kospi_regime_table,
             chartking_table=source_tables["chartking"],
+            lgbm_table=lgbm_table,
             macro_table=macro_table,
             korea_macro_table=korea_macro_table,
             fred_image=fred_image,

@@ -148,7 +148,7 @@ def get_latest_source_csvs() -> dict[str, Path | None]:
 
     # Define glob patterns per source
     glob_patterns = {
-        "chartking": "top30_x3*.csv",
+        "chartking": "top30_lev*.csv",
     }
 
     for source, directory in SOURCE_DIRS.items():
@@ -232,8 +232,8 @@ def get_latest_lgbm_csv() -> Path | None:
         logger.warning(f"LGBM source directory not found: {LGBM_SOURCE_DIR}")
         return None
 
-    # Find top30 CSV files
-    files = list(LGBM_SOURCE_DIR.glob("*_top30.csv"))
+    # Find top CSV files (top10, top20, top30, etc.)
+    files = list(LGBM_SOURCE_DIR.glob("*_top*.csv"))
 
     if files:
         files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
@@ -242,6 +242,22 @@ def get_latest_lgbm_csv() -> Path | None:
         return latest
     else:
         logger.warning("  lgbm: No CSV files found")
+        return None
+
+
+def get_kospi_regime_csv() -> Path | None:
+    """Get the kospi_regime.csv from chartking output directory."""
+    chartking_dir = SOURCE_DIRS["chartking"]
+    if not chartking_dir.exists():
+        logger.warning(f"Chartking source directory not found: {chartking_dir}")
+        return None
+
+    regime_path = chartking_dir / "kospi_regime.csv"
+    if regime_path.exists():
+        logger.info(f"  kospi_regime: {regime_path.name}")
+        return regime_path
+    else:
+        logger.warning("  kospi_regime: kospi_regime.csv not found")
         return None
 
 
@@ -465,6 +481,10 @@ def run_git_update(
     logger.info("\n[2/10] Finding latest source CSVs...")
     source_csvs = get_latest_source_csvs()
 
+    # Step 2b: Get KOSPI Regime CSV
+    logger.info("\n[2b/10] Finding KOSPI regime CSV...")
+    kospi_regime_csv = get_kospi_regime_csv()
+
     # Step 3: Get Real CAP CSV
     logger.info("\n[3/10] Finding latest Real CAP CSV...")
     real_cap_csv = get_latest_real_cap_csv()
@@ -546,6 +566,7 @@ def run_git_update(
         real_cap_csv=real_cap_csv,
         minute60_csv=minute60_csv,
         xgboost_csv=xgboost_csv,
+        kospi_regime_csv=kospi_regime_csv,
     )
     logger.info(f"HTML generated: {list(html_outputs.keys())}")
 
