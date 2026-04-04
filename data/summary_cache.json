@@ -554,18 +554,10 @@
   "295310": {
     "code": "295310",
     "name": "에이치브이엠",
-    "summary": "미국 민간 우주기업 'Tier 1 공급사' 승인으로 글로벌 공급망에 진입했습니다. 우주 매출 비중 68.5% 달성 및 서산공장 증설에 따른 가동률 상승이 기대되는 첨단 금속 소재 전문 기업입니다.",
-    "keywords": [
-      "에이치브이엠",
-      "우주항공",
-      "Tier1",
-      "원자재",
-      "첨단금속",
-      "공급망",
-      "서산공장"
-    ],
+    "summary": "AI 요약 생성 실패: 403 Your API key was reported as leaked. Please us",
+    "keywords": [],
     "target_prices": [],
-    "cached_at": "2026-03-27T11:30:24.327874"
+    "cached_at": "2026-04-03T11:31:04.101643"
   },
   "028260": {
     "code": "028260",
@@ -1098,18 +1090,10 @@
   "089970": {
     "code": "089970",
     "name": "브이엠",
-    "summary": "SK하이닉스와 매출액 대비 116%인 815억 원 규모의 반도체 장비 공급 계약을 체결했습니다. 대규모 수주로 인한 거래정지 후 실적 개선 기대감이 높으며, M15X 투자 수혜로 올해 역대 최대 매출이 전망됩니다.",
-    "keywords": [
-      "SK하이닉스",
-      "반도체 장비",
-      "공급계약",
-      "매출액 대비 116%",
-      "거래정지",
-      "M15X",
-      "역대 최대 매출"
-    ],
+    "summary": "AI 요약 생성 실패: 403 Your API key was reported as leaked. Please us",
+    "keywords": [],
     "target_prices": [],
-    "cached_at": "2026-03-26T15:30:18.035450"
+    "cached_at": "2026-04-03T11:31:02.678434"
   },
   "002020": {
     "code": "002020",
@@ -1846,5 +1830,53 @@
     ],
     "target_prices": [],
     "cached_at": "2026-04-02T11:30:48.276160"
+  },
+  "058650": {
+    "code": "058650",
+    "name": "세아홀딩스",
+    "summary": "철강 업황 회복과 우주·방산 중심 사업 재편으로 성장 동력을 확보했습니다. 3년 연속 세계 윤리 기업 선정 및 기업가치 제고 계획 이행으로 ESG 경영과 주주 가치를 강화하며 안정적인 지배구조를 유지 중입니다.",
+    "keywords": [
+      "세아홀딩스",
+      "철강",
+      "윤리경영",
+      "우주방산",
+      "기업가치제고",
+      "이태성",
+      "ESG"
+    ],
+    "target_prices": [],
+    "cached_at": "2026-04-03T11:30:55.689695"
+  },
+  "052690": {
+    "code": "052690",
+    "name": "한전기술",
+    "summary": "AI 요약 생성 실패: 403 Your API key was reported as leaked. Please us",
+    "keywords": [],
+    "target_prices": [],
+    "cached_at": "2026-04-03T11:30:57.113554"
+  },
+  "014620": {
+    "code": "014620",
+    "name": "성광벤드",
+    "summary": "AI 요약 생성 실패: 403 Your API key was reported as leaked. Please us",
+    "keywords": [],
+    "target_prices": [],
+    "cached_at": "2026-04-03T11:30:58.515662"
+  },
+  "100840": {
+    "code": "100840",
+    "name": "SNT에너지",
+    "summary": "AI 요약 생성 실패: 403 Your API key was reported as leaked. Please us",
+    "keywords": [],
+    "target_prices": [],
+    "cached_at": "2026-04-03T11:30:59.931125"
+  },
+  "016360": {
+    "code": "016360",
+    "name": "삼성증권",
+    "summary": "AI 요약 생성 실패: 403 Your API key was reported as leaked. Please us",
+    "keywords": [],
+    "target_prices": [],
+    "cached_at": "2026-04-03T11:31:01.274024"
   }
 }
