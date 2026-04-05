@@ -232,7 +232,13 @@ def get_latest_lgbm_csv() -> Path | None:
         logger.warning(f"LGBM source directory not found: {LGBM_SOURCE_DIR}")
         return None
 
-    # Find top CSV files (top10, top20, top30, etc.)
+    # FINAL_ENSEMBLE_TOP30.csv 우선 사용
+    final_csv = LGBM_SOURCE_DIR / "FINAL_ENSEMBLE_TOP30.csv"
+    if final_csv.exists():
+        logger.info(f"  lgbm: {final_csv.name}")
+        return final_csv
+
+    # 없으면 날짜 기반 top csv 중 최신 파일 사용
     files = list(LGBM_SOURCE_DIR.glob("*_top*.csv"))
 
     if files:
