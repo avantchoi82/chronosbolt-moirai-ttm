@@ -425,10 +425,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
-        <button class="nav-btn active" onclick="showTab('lgbm')" id="btn-lgbm">
-            <span class="icon">&#129302;</span>
-            <span>LGMB</span>
-        </button>
         <button class="nav-btn" onclick="showTab('chartking')" id="btn-chartking">
             <span class="icon">&#127775;</span>
             <span>차트킹</span>
@@ -451,34 +447,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <!-- Main Content -->
     <div class="main-content">
         <div class="container">
-
-            <!-- LGBM TAB -->
-            <div class="tab-content active" id="tab-lgbm">
-                <header>
-                    <h1 class="ml-header">&#129302; LGMB (Machine Learning)</h1>
-                    <div class="subtitle">LGMB | ML-based Stock Recommendations</div>
-                    <div class="meta">
-                        <span>Date: <strong>{date_str}</strong></span>
-                        <span>|</span>
-                        <span>Generated: <strong>{generated_at}</strong></span>
-                    </div>
-                </header>
-
-                <div class="section ml-section">
-                    <h2 class="section-title">&#129302; LGMB Top Recommendations</h2>
-                    <div class="table-wrapper">
-                        {lgbm_table}
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2 class="section-title">Download Data</h2>
-                    <div class="history-link" style="text-align: left; padding: 15px;">
-                        <p style="margin-bottom: 10px; color: #888;">Source CSV Files:</p>
-                        <a href="sources/" target="_blank">&#128193; Download Source CSVs</a>
-                    </div>
-                </div>
-            </div>
 
             <!-- CHARTKING TAB -->
             <div class="tab-content" id="tab-chartking">
@@ -1035,115 +1003,6 @@ def _source_df_to_html_table(
             "시총(억)": "시총(억)",
             "이격도": "이격도",
         }
-    elif source == "lgbm":
-        # lgbm: rank, ticker, name, score, score_percentile, market_cap, value_traded_20d, vol_20d, risk_flags, close
-        # 'rank' is handled manually as the first column, so we exclude it from display_cols
-        display_cols = ["ticker", "name", "close", "score", "score_percentile", "market_cap", "vol_20d", "risk_flags"]
-        col_names = {
-            "rank": "순위",
-            "ticker": "코드",
-            "name": "종목명",
-            "close": "현재가",
-            "score": "점수",
-            "score_percentile": "백분위",
-            "market_cap": "시총",
-            "vol_20d": "변동성",
-            "risk_flags": "리스크",
-        }
-    elif source == "minute60":
-        # real_minute: 티커, 종목명, 현재가, 손절가, 익절가, VAM, 이격도, 기울기, 사유, 시총(억)
-        display_cols = ["티커", "종목명", "현재가", "손절가", "익절가", "VAM", "이격도", "기울기", "사유", "시총(억)"]
-        col_names = {
-            "티커": "코드",
-            "종목명": "종목명",
-            "현재가": "현재가",
-            "손절가": "손절가",
-            "익절가": "익절가",
-            "VAM": "VAM",
-            "이격도": "이격도",
-            "기울기": "기울기",
-            "사유": "패턴",
-            "시총(억)": "시총(억)",
-        }
-    else:
-        # Fallback: use all columns from DataFrame
-        display_cols = list(df.columns)
-        col_names = {c: c for c in display_cols}
-
-    available_cols = [c for c in display_cols if c in df.columns]
-
-    if not available_cols:
-        # Fallback: show all columns
-        available_cols = list(df.columns)
-        col_names = {c: c for c in available_cols}
-
-    # Start table
-    html_parts.append("<table>")
-    html_parts.append("<thead><tr>")
-    html_parts.append("<th>#</th>")  # Rank column
-
-    for col in available_cols:
-        header = col_names.get(col, col)
-        html_parts.append(f"<th>{header}</th>")
-
-    html_parts.append("</tr></thead>")
-    html_parts.append("<tbody>")
-
-    # Determine which column contains the stock code
-    code_col = None
-    for col in ["티커", "ticker", "code"]:
-        if col in df.columns:
-            code_col = col
-            break
-
-    num_cols = len(available_cols) + 1  # +1 for rank column
-
-    max_rows = len(df) if source == "chartking" else 20
-    for idx, (_, row) in enumerate(df.head(max_rows).iterrows(), 1):
-        html_parts.append("<tr>")
-        # Rank
-        rank_class = f"rank-{idx}" if idx <= 3 else ""
-        html_parts.append(f'<td><span class="rank {rank_class}">{idx}</span></td>')
-
-        for col in available_cols:
-            value = row.get(col, "")
-            formatted = _format_source_value(value, col)
-            html_parts.append(f"<td>{formatted}</td>")
-        html_parts.append("</tr>")
-
-        # Add summary row for top 10 stocks if summaries are provided
-        if idx <= 10 and summaries and code_col:
-            stock_code = str(row.get(code_col, "")).split(".")[0].zfill(6)
-            summary = summaries.get(stock_code)
-            if summary:
-                html_parts.append(f'<tr class="summary-row">')
-                html_parts.append(f'<td colspan="{num_cols}" class="summary-cell">')
-
-                # Summary text
-                html_parts.append(f'<div class="summary-text"><span class="icon">&#128240;</span>{summary.summary}</div>')
-
-                # Keywords
-                if summary.keywords:
-                    html_parts.append('<div class="keywords">')
-                    for kw in summary.keywords:
-                        html_parts.append(f'<span class="keyword-tag">#{kw}</span>')
-                    html_parts.append('</div>')
-
-                # Target prices
-                if summary.target_prices:
-                    html_parts.append('<div class="target-prices"><span class="icon">&#127919;</span>')
-                    for tp in summary.target_prices[:3]:
-                        html_parts.append(f'<span class="target-price-item">{tp["broker"]}: {tp["price"]:,}원</span>')
-                    html_parts.append('</div>')
-
-                html_parts.append('</td>')
-                html_parts.append('</tr>')
-
-    html_parts.append("</tbody></table>")
-
-    return "\n".join(html_parts)
-
-
 def _format_source_value(value, col_name: str) -> str:
     """Format value for source table display."""
     if pd.isna(value) or value == "" or value == "nan":
@@ -1253,7 +1112,6 @@ def _format_source_value(value, col_name: str) -> str:
     if col_name in ["패턴", "사유"]:
         return f'<span class="pattern">{value_str}</span>'
 
-    # LGBM score_percentile column
     if col_name == "score_percentile":
         try:
             val = float(value)
@@ -1261,7 +1119,6 @@ def _format_source_value(value, col_name: str) -> str:
         except (ValueError, TypeError):
             return value_str
 
-    # LGBM vol_20d column (volatility)
     if col_name == "vol_20d":
         try:
             val = float(value) * 100  # Convert to percentage
@@ -1270,7 +1127,6 @@ def _format_source_value(value, col_name: str) -> str:
         except (ValueError, TypeError):
             return value_str
 
-    # LGBM risk_flags column
     if col_name == "risk_flags":
         try:
             # Parse risk flags from string like "['high_vol', 'low_volume']"
@@ -1484,7 +1340,6 @@ class HTMLGenerator:
         source_csvs: dict[str, Path] | None = None,
         macro_csv: Path | None = None,
         korea_macro_csv: Path | None = None,
-        lgbm_csv: Path | None = None,
         fred_png: Path | None = None,
         stock_summaries: dict[str, dict] | None = None,
         kospidispart_txt: Path | None = None,
@@ -1503,7 +1358,6 @@ class HTMLGenerator:
             source_csvs: Dictionary of {source_name: csv_path}
             macro_csv: Path to US ETF macro CSV file
             korea_macro_csv: Path to Korea ETF macro CSV file
-            lgbm_csv: Path to LGBM CSV file
             fred_png: Path to FRED liquidity dashboard PNG file
             stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
             kospidispart_txt: Path to KOSPIDISPART txt file (KOSPI market status)
@@ -1585,29 +1439,14 @@ class HTMLGenerator:
                 logger.warning(f"Failed to read Korea macro CSV: {e}")
                 korea_macro_table = f'<p style="color: #888;">Error loading Korea ETF data: {e}</p>'
 
-        # Generate LGBM table
-        lgbm_table = '<p style="color: #888; padding: 20px;">No LGBM data available</p>'
-        if lgbm_csv and lgbm_csv.exists():
-            try:
-                lgbm_comments = _extract_csv_comments(lgbm_csv)
                 # Try reading with header first
-                lgbm_df = pd.read_csv(lgbm_csv, encoding="utf-8-sig", comment="#")
                 
                 # Check if first row was actually data (no header case)
                 # If 'rank' (or other expected col) is not in columns, or first col is numeric
-                if not any(c in lgbm_df.columns for c in ["rank", "ticker", "name"]):
                     # Re-read without header
-                    lgbm_df = pd.read_csv(lgbm_csv, encoding="utf-8-sig", comment="#", header=None)
                     # Assign columns based on count
-                    if len(lgbm_df.columns) == 5:
-                        lgbm_df.columns = ["rank", "ticker", "name", "close", "score"]
-                    elif len(lgbm_df.columns) == 4:
-                        lgbm_df.columns = ["rank", "ticker", "name", "score"]
                 
-                lgbm_table = _source_df_to_html_table(lgbm_df, "lgbm", lgbm_comments)
             except Exception as e:
-                logger.warning(f"Failed to read LGBM CSV: {e}")
-                lgbm_table = f'<p style="color: #888;">Error loading LGBM data: {e}</p>'
 
         # Generate Minute60 table
         minute60_table = '<p style="color: #888; padding: 20px;">No minute60 data available</p>'
@@ -1658,7 +1497,6 @@ class HTMLGenerator:
             kosdaq_chart_image=kosdaq_chart_image,
             kospi_regime_table=kospi_regime_table,
             chartking_table=source_tables["chartking"],
-            lgbm_table=lgbm_table,
             macro_table=macro_table,
             korea_macro_table=korea_macro_table,
             fred_image=fred_image,
@@ -1726,7 +1564,6 @@ def generate_html_pages(
     source_csvs: dict[str, Path] | None = None,
     macro_csv: Path | None = None,
     korea_macro_csv: Path | None = None,
-    lgbm_csv: Path | None = None,
     fred_png: Path | None = None,
     stock_summaries: dict[str, dict] | None = None,
     kospidispart_txt: Path | None = None,
@@ -1747,7 +1584,6 @@ def generate_html_pages(
         source_csvs: Dictionary of {source_name: csv_path}
         macro_csv: Path to US ETF macro CSV file
         korea_macro_csv: Path to Korea ETF macro CSV file
-        lgbm_csv: Path to LGBM CSV file
         fred_png: Path to FRED liquidity dashboard PNG file
         stock_summaries: Dict of {source: {code: StockSummary}} for AI summaries
         kospidispart_txt: Path to KOSPIDISPART txt file (KOSPI market status)
@@ -1762,6 +1598,6 @@ def generate_html_pages(
     generator = HTMLGenerator(pages_dir, github_repo)
     return generator.generate(
         df, as_of_date, top_n, result_csv, source_csvs, macro_csv, korea_macro_csv,
-        lgbm_csv, fred_png, stock_summaries, kospidispart_txt, real_cap_csv,
+        fred_png, stock_summaries, kospidispart_txt, real_cap_csv,
         minute60_csv, xgboost_csv, kospi_regime_csv
     )

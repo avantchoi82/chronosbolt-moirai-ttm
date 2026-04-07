@@ -405,11 +405,8 @@
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
-        <button class="nav-btn active" onclick="showTab('lgbm')" id="btn-lgbm">
-            <span class="icon">&#129302;</span>
-            <span>LGMB</span>
-        </button>
-        <button class="nav-btn" onclick="showTab('chartking')" id="btn-chartking">
+        
+        <button class="nav-btn" onclick="showTab('chartking')" id="btn-chartking" class="nav-btn active">
             <span class="icon">&#127775;</span>
             <span>차트킹</span>
         </button>
@@ -432,115 +429,10 @@
     <div class="main-content">
         <div class="container">
 
-            <!-- LGBM TAB -->
-            <div class="tab-content active" id="tab-lgbm">
-                <header>
-                    <h1 class="ml-header">&#129302; LGMB (Machine Learning)</h1>
-                    <div class="subtitle">LGMB | ML-based Stock Recommendations</div>
-                    <div class="meta">
-                        <span>Date: <strong>2026-04-04</strong></span>
-                        <span>|</span>
-                        <span>Generated: <strong>2026-04-04 09:34:00</strong></span>
-                    </div>
-                </header>
-
-                <div class="section ml-section">
-                    <h2 class="section-title">&#129302; LGMB Top Recommendations</h2>
-                    <div class="table-wrapper">
-                        <table>
-<thead><tr>
-<th>#</th>
-<th>코드</th>
-<th>종목명</th>
-<th>현재가</th>
-<th>점수</th>
-</tr></thead>
-<tbody>
-<tr>
-<td><span class="rank rank-1">1</span></td>
-<td><span class="code">214450</span></td>
-<td><span class="name">파마리서치</span></td>
-<td><span class="number">292,500</span></td>
-<td><span class="number positive">0.0141</span></td>
-</tr>
-<tr>
-<td><span class="rank rank-2">2</span></td>
-<td><span class="code">52020</span></td>
-<td><span class="name">에스티큐브</span></td>
-<td><span class="number">16,130</span></td>
-<td><span class="number positive">0.0097</span></td>
-</tr>
-<tr>
-<td><span class="rank rank-3">3</span></td>
-<td><span class="code">64760</span></td>
-<td><span class="name">티씨케이</span></td>
-<td><span class="number">215,500</span></td>
-<td><span class="number positive">0.0082</span></td>
-</tr>
-<tr>
-<td><span class="rank ">4</span></td>
-<td><span class="code">200710</span></td>
-<td><span class="name">에이디테크놀로지</span></td>
-<td><span class="number">48,200</span></td>
-<td><span class="number positive">0.0082</span></td>
-</tr>
-<tr>
-<td><span class="rank ">5</span></td>
-<td><span class="code">31980</span></td>
-<td><span class="name">피에스케이홀딩스</span></td>
-<td><span class="number">99,000</span></td>
-<td><span class="number positive">0.0077</span></td>
-</tr>
-<tr>
-<td><span class="rank ">6</span></td>
-<td><span class="code">32500</span></td>
-<td><span class="name">케이엠더블유</span></td>
-<td><span class="number">27,600</span></td>
-<td><span class="number positive">0.0077</span></td>
-</tr>
-<tr>
-<td><span class="rank ">7</span></td>
-<td><span class="code">39030</span></td>
-<td><span class="name">이오테크닉스</span></td>
-<td><span class="number">397,500</span></td>
-<td><span class="number positive">0.0077</span></td>
-</tr>
-<tr>
-<td><span class="rank ">8</span></td>
-<td><span class="code">43260</span></td>
-<td><span class="name">성호전자</span></td>
-<td><span class="number">44,000</span></td>
-<td><span class="number positive">0.0077</span></td>
-</tr>
-<tr>
-<td><span class="rank ">9</span></td>
-<td><span class="code">80580</span></td>
-<td><span class="name">오킨스전자</span></td>
-<td><span class="number">19,640</span></td>
-<td><span class="number positive">0.0077</span></td>
-</tr>
-<tr>
-<td><span class="rank ">10</span></td>
-<td><span class="code">89970</span></td>
-<td><span class="name">브이엠</span></td>
-<td><span class="number">40,650</span></td>
-<td><span class="number positive">0.0077</span></td>
-</tr>
-</tbody></table>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2 class="section-title">Download Data</h2>
-                    <div class="history-link" style="text-align: left; padding: 15px;">
-                        <p style="margin-bottom: 10px; color: #888;">Source CSV Files:</p>
-                        <a href="sources/" target="_blank">&#128193; Download Source CSVs</a>
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- CHARTKING TAB -->
-            <div class="tab-content" id="tab-chartking">
+            <div class="tab-content" id="tab-chartking" class="tab-content active">
                 <header>
                     <h1>&#127775; ChartKing</h1>
                     <div class="subtitle">KOSPI Regime + ChartKing &#49324;&#44536;&#45684;</div>

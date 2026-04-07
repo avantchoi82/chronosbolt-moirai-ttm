@@ -44,7 +44,6 @@ def analyze_top_stocks(
 
     Args:
         csv_path: Path to source CSV file
-        source: Source name (chartking, real, xgboost, lgbm)
         top_n: Number of top stocks to analyze
         enable_ai: Whether to enable AI summarization
 
@@ -68,7 +67,7 @@ def analyze_top_stocks(
     if source in ["chartking", "real"]:
         code_col = "티커"
         name_col = "종목명"
-    elif source in ["xgboost", "lgbm"]:
+    elif source in ["xgboost"]:
         code_col = "ticker"
         name_col = "name"
 
@@ -183,7 +182,6 @@ def analyze_top_stocks(
 def analyze_all_sources(
     source_csvs: dict[str, Path] | None = None,
     xgboost_csv: Path | None = None,
-    lgbm_csv: Path | None = None,
     top_n: int = 10,
     enable_ai: bool = True,
 ) -> dict[str, dict[str, StockSummary]]:
@@ -192,7 +190,6 @@ def analyze_all_sources(
     Args:
         source_csvs: Dictionary of {source_name: csv_path} for chartking, real
         xgboost_csv: Path to XGBoost CSV
-        lgbm_csv: Path to LGBM CSV
         top_n: Number of top stocks per source
         enable_ai: Whether to enable AI summarization
 
@@ -217,8 +214,6 @@ def analyze_all_sources(
             xgboost_csv, "xgboost", top_n, enable_ai
         )
 
-    # Analyze LGBM (in ML tab, skip for stocks tab)
-    # LGBM is shown in a separate tab, so we can skip it here
     # or analyze it separately if needed
 
     return all_summaries

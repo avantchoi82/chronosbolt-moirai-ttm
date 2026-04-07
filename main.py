@@ -42,8 +42,6 @@ REAL_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\real\output")
 # Macro (ETF) source directory
 MACRO_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\etfking\output")
 
-# LGBM source directory
-LGBM_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\lgbm\output\top30")
 
 # FRED source directory (liquidity dashboard)
 FRED_SOURCE_DIR = Path(r"C:\Users\user\PycharmProjects\fred\outputs")
@@ -222,35 +220,6 @@ def get_latest_korea_macro_csv() -> Path | None:
         return None
 
 
-def get_latest_lgbm_csv() -> Path | None:
-    """Get the latest LGBM top30 CSV file.
-
-    Returns:
-        Path to latest file or None if not found
-    """
-    if not LGBM_SOURCE_DIR.exists():
-        logger.warning(f"LGBM source directory not found: {LGBM_SOURCE_DIR}")
-        return None
-
-    # FINAL_ENSEMBLE_TOP30.csv 우선 사용
-    final_csv = LGBM_SOURCE_DIR / "FINAL_ENSEMBLE_TOP30.csv"
-    if final_csv.exists():
-        logger.info(f"  lgbm: {final_csv.name}")
-        return final_csv
-
-    # 없으면 날짜 기반 top csv 중 최신 파일 사용
-    files = list(LGBM_SOURCE_DIR.glob("*_top*.csv"))
-
-    if files:
-        files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
-        latest = files[0]
-        logger.info(f"  lgbm: {latest.name}")
-        return latest
-    else:
-        logger.warning("  lgbm: No CSV files found")
-        return None
-
-
 def get_kospi_regime_csv() -> Path | None:
     """Get the kospi_regime.csv from chartking output directory."""
     chartking_dir = SOURCE_DIRS["chartking"]
@@ -406,12 +375,7 @@ def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
             copied.append(dest_path)
             logger.info(f"  Copied: {dest_name}")
 
-    # Copy LGBM CSV
-    lgbm_csv = get_latest_lgbm_csv()
-    if lgbm_csv and lgbm_csv.exists():
-        dest_name = f"lgbm_{lgbm_csv.name}"
         dest_path = sources_dir / dest_name
-        if _copy_if_newer(lgbm_csv, dest_path):
             copied.append(dest_path)
             logger.info(f"  Copied: {dest_name}")
 
@@ -504,9 +468,6 @@ def run_git_update(
     macro_csv = get_latest_macro_csv()
     korea_macro_csv = get_latest_korea_macro_csv()
 
-    # Step 6: Get LGBM CSV
-    logger.info("\n[6/9] Finding latest LGBM CSV...")
-    lgbm_csv = get_latest_lgbm_csv()
 
     # Step 7: Get XGBOOST CSV
     logger.info("\n[7/11] Finding latest XGBOOST CSV...")
@@ -541,7 +502,6 @@ def run_git_update(
             stock_summaries = analyze_all_sources(
                 source_csvs=source_csvs,
                 xgboost_csv=None,
-                lgbm_csv=None,  # Skip LGBM for now (separate ML tab)
                 top_n=10,
                 enable_ai=True,
             )
@@ -565,7 +525,6 @@ def run_git_update(
         source_csvs=source_csvs,
         macro_csv=macro_csv,
         korea_macro_csv=korea_macro_csv,
-        lgbm_csv=lgbm_csv,
         fred_png=fred_png,
         stock_summaries=stock_summaries,
         kospidispart_txt=kospidispart_txt,
