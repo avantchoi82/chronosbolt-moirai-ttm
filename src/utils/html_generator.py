@@ -1439,15 +1439,6 @@ class HTMLGenerator:
                 logger.warning(f"Failed to read Korea macro CSV: {e}")
                 korea_macro_table = f'<p style="color: #888;">Error loading Korea ETF data: {e}</p>'
 
-                # Try reading with header first
-                
-                # Check if first row was actually data (no header case)
-                # If 'rank' (or other expected col) is not in columns, or first col is numeric
-                    # Re-read without header
-                    # Assign columns based on count
-                
-            except Exception as e:
-
         # Generate Minute60 table
         minute60_table = '<p style="color: #888; padding: 20px;">No minute60 data available</p>'
         if minute60_csv and minute60_csv.exists():

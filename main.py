@@ -146,7 +146,7 @@ def get_latest_source_csvs() -> dict[str, Path | None]:
 
     # Define glob patterns per source
     glob_patterns = {
-        "chartking": "top30_lev*.csv",
+        "chartking": "top30_lev_wfo_*.csv",
     }
 
     for source, directory in SOURCE_DIRS.items():
@@ -372,10 +372,6 @@ def copy_source_csvs_to_docs(docs_dir: Path) -> list[Path]:
         dest_name = f"etfking_{korea_csv.name}"
         dest_path = sources_dir / dest_name
         if _copy_if_newer(korea_csv, dest_path):
-            copied.append(dest_path)
-            logger.info(f"  Copied: {dest_name}")
-
-        dest_path = sources_dir / dest_name
             copied.append(dest_path)
             logger.info(f"  Copied: {dest_name}")
 
