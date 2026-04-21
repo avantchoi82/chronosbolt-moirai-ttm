@@ -433,6 +433,9 @@ def run_git_update(
         push: If True, push to GitHub Pages
         enable_ai: If True, generate AI summaries for top 10 stocks
     """
+    logger.info("GitHub upload and HTML generation has been disabled by user request.")
+    return
+
     logger.info("=" * 60)
     logger.info("Git Update Tool - CSV & HTML Publisher")
     logger.info("=" * 60)
